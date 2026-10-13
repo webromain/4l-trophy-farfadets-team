@@ -17,7 +17,7 @@ export default function SolidaritySection() {
       <div className="mt-10">
         <Quote
           quote="Nous voulons vivre cette aventure, et nous voulons qu'elle soit utile."
-          attribution="Romain et Bastien"
+          attribution="Romain et Catalin"
         />
       </div>
     </Section>

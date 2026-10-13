@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import ReasonsSection from "@/features/sponsors/ReasonsSection";
 import TiersSection from "@/features/sponsors/TiersSection";
 import PlacementsSection from "@/features/sponsors/PlacementsSection";
+import TaxSection from "@/features/sponsors/TaxSection";
 import NextStepsSection from "@/features/sponsors/NextStepsSection";
 import { HIGHEST_TIER_AMOUNT, LOWEST_TIER_AMOUNT } from "@/content/sponsorship";
 import { formatEuros } from "@/lib/format";
@@ -17,6 +18,7 @@ export default function SponsorsPage() {
       <ReasonsSection />
       <TiersSection />
       <PlacementsSection />
+      <TaxSection />
       <NextStepsSection />
     </>
   );

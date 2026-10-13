@@ -6,7 +6,8 @@
 
 html {
   background-color: var(--color-poster-red);
-  /* Jaro et Kaushan Script n'ont qu'une graisse : pas de faux gras calculé. */
+  /* Squada One, Permanent Marker et Kaushan Script ne sont chargées qu'en une graisse :
+     pas de faux gras calculé. */
   font-synthesis-weight: none;
 }
 
@@ -14,6 +15,7 @@ html {
 body {
   color: var(--color-ink);
   font-family: var(--font-sans);
+  font-size: var(--text-base);
   font-weight: 500;
   text-wrap: pretty;
 }

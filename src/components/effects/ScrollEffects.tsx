@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import {
+  entryProgress,
   pageProgress,
   reflectionPoint,
   revealProgress,
@@ -14,6 +15,11 @@ import {
 const EFFECTS = [
   { className: "track", property: "--track-progress", progress: trackProgress },
   { className: "reveal", property: "--progress", progress: revealProgress },
+  {
+    className: "reveal-entry",
+    property: "--progress",
+    progress: entryProgress,
+  },
   { className: "parallax", property: "--progress", progress: viewProgress },
   { className: "marquee", property: "--progress", progress: viewProgress },
 ] as const;

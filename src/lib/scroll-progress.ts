@@ -30,6 +30,19 @@ export function revealProgress(
   );
 }
 
+/* Apparition pour le bas de page (pied de page) : terminée dès que l'élément est
+   entièrement visible. `revealProgress` demande à l'élément de monter dans
+   l'écran, ce que le bas de la page ne fait jamais. */
+export function entryProgress(
+  top: number,
+  height: number,
+  viewportHeight: number,
+): number {
+  return clamp(
+    (viewportHeight - top) / Math.max(1, Math.min(height, viewportHeight)),
+  );
+}
+
 /* Section épinglée à défilement horizontal : du moment où elle touche le haut de
    l'écran à celui où son bas atteint le bas de l'écran. Une section pas plus haute
    que l'écran n'est pas épinglée. */

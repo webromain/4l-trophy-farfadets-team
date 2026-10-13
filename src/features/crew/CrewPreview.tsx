@@ -1,8 +1,9 @@
 import Section from "@/components/ui/Section";
 import SectionTitle from "@/components/ui/SectionTitle";
+import GroupPhoto from "@/components/ui/GroupPhoto";
 import PhotoPlaceholder from "@/components/ui/PhotoPlaceholder";
 import SectionLink from "@/components/ui/SectionLink";
-import { CREW } from "@/content/crew";
+import { CREW, CREW_PORTRAITS } from "@/content/crew";
 
 export default function CrewPreview() {
   return (
@@ -11,12 +12,12 @@ export default function CrewPreview() {
         id="equipage"
         eyebrow="Qui sommes-nous"
         title="L'équipage"
-        lead="Deux amis passionnés d'automobile, un profil mécanique et un profil numérique."
+        lead="Deux amis passionnés d'automobile et d'informatique, un profil industriel et un profil numérique."
       />
       <div className="grid gap-8 lg:grid-cols-2">
         <div>
           {CREW.map((member) => (
-            <div key={member.name} className="mb-6">
+            <div key={member.name} className="reveal mb-6">
               <p className="font-heading text-label uppercase text-accent">
                 {member.role}
               </p>
@@ -30,9 +31,16 @@ export default function CrewPreview() {
           ))}
           <SectionLink href="/equipage">Découvrir l&apos;équipage</SectionLink>
         </div>
-        <PhotoPlaceholder
-          label="Photo de l'équipage"
-          caption="Romain et Bastien, photo pleine largeur, à fournir"
+        <GroupPhoto
+          name="equipage"
+          alt="Romain et Catalin, l'équipage des Farfadets"
+          portraits={CREW_PORTRAITS}
+          fallback={
+            <PhotoPlaceholder
+              label="Photo de l'équipage"
+              caption="Romain et Catalin, photo pleine largeur, à fournir"
+            />
+          }
         />
       </div>
     </Section>

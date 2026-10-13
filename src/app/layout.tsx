@@ -10,7 +10,7 @@ import { formatKilometres } from "@/lib/format";
 import { FONT_CLASSES } from "@/styles/fonts";
 import "@/styles/globals.css";
 
-const DESCRIPTION = `Romain et Bastien prennent le départ du 4L Trophy 2027 : ${formatKilometres(
+const DESCRIPTION = `Romain et Catalin prennent le départ du 4L Trophy 2027 : ${formatKilometres(
   EVENT.distanceKm,
 )}, 3 pays, ${EVENT.days} jours en Renault 4L, pour une cause solidaire. Devenez sponsor de l'équipage.`;
 

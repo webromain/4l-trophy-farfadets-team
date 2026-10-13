@@ -8,33 +8,47 @@ export default function SocialSection() {
     <Section headingId="reseaux">
       <h2
         id="reseaux"
-        className="font-display text-section-title uppercase text-ink"
+        className="reveal font-display text-section-title uppercase text-ink"
       >
         Suivez l&apos;aventure
       </h2>
-      <div className="mt-6 space-y-6">
+      <div className="reveal mt-6 space-y-6">
         <div>
           <p className={LABEL_CLASS}>Site web</p>
-          <p className="mt-1">
-            {SOCIAL_LINKS.website ?? (
-              <ToCompleteInline label="adresse du site" />
-            )}
-          </p>
+          <a
+            href={SOCIAL_LINKS.website}
+            className="inline-flex min-h-11 items-center font-semibold text-accent underline underline-offset-4 transition-colors duration-200 hover:text-ink"
+          >
+            {SOCIAL_LINKS.website.replace("https://", "")}
+          </a>
         </div>
         <div>
           <p className={LABEL_CLASS}>Instagram</p>
-          <p className="mt-1">
-            {SOCIAL_LINKS.instagram ?? (
+          {SOCIAL_LINKS.instagram ? (
+            <a
+              href={`https://www.instagram.com/${SOCIAL_LINKS.instagram}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center font-semibold text-accent underline underline-offset-4 transition-colors duration-200 hover:text-ink"
+            >
+              {`@${SOCIAL_LINKS.instagram}`}
+              <span className="sr-only">
+                {" "}
+                — s&apos;ouvre dans un nouvel onglet
+              </span>
+            </a>
+          ) : (
+            <p className="mt-1">
               <ToCompleteInline label="compte Instagram" />
-            )}
-          </p>
+            </p>
+          )}
         </div>
       </div>
 
-      <p className="glass mt-10 max-w-text rounded-panel p-6 leading-relaxed text-ink">
-        Ce site ne comporte pas de formulaire : aucune donnée personnelle
-        n&apos;y est collectée ni hébergée. Un appel ou un courriel arrive plus
-        vite à l&apos;équipage.
+      <p className="reveal glass mt-10 max-w-text rounded-panel p-6 leading-relaxed text-ink">
+        Ce site ne comporte pas de formulaire : vous n&apos;y saisissez aucune
+        donnée personnelle. Un appel ou un courriel arrive plus vite à
+        l&apos;équipage.
       </p>
     </Section>
   );

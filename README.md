@@ -1,6 +1,6 @@
 # Les Farfadets — 4L Trophy 2027
 
-Site vitrine de l'équipage Romain Poisson et Bastien Grangeon, au départ du 4L Trophy 2027.
+Site vitrine de l'équipage Romain Poisson et Catalin Stefanescu, au départ du 4L Trophy 2027.
 
 Il n'a qu'un but : **convaincre un dirigeant de TPE ou PME de devenir sponsor en moins de deux minutes de lecture**, et lui donner un moyen simple de nous joindre. C'est la déclinaison web du dossier de sponsoring PDF, dont il reprend la direction artistique.
 
@@ -70,10 +70,11 @@ src/
 ├── content/              LES DONNÉES : un fichier par sujet, source de vérité du contenu
 ├── lib/                  fonctions pures (mise en forme des nombres, calculs des effets)
 ├── styles/               LES STYLES GLOBAUX : thème, verre, effets au scroll, base
-├── server/               LE CÔTÉ SERVEUR : la sécurité (CSP, en-têtes)
+├── server/               LE CÔTÉ SERVEUR : la sécurité (CSP, en-têtes), la recherche des photos
 └── proxy.ts              point d'entrée serveur de chaque requête
 scripts/                  outils du projet (formatage sûr)
-public/                   fichiers servis tels quels : pdfs/, imgs/, sponsors/
+public/                   fichiers servis tels quels : pdfs/, photos/, sponsors/
+docs/references/          modèles de travail, jamais mis en ligne : l'affiche officielle du 4L Trophy
 ```
 
 L'alias `@/` pointe sur `src/` : `@/components/ui/Button`, `@/content/budget`…
@@ -120,6 +121,24 @@ Le jour où le site aura besoin d'un vrai traitement serveur (formulaire de cont
 
 Les nombres sont mis en forme par `formatNumber()`, `formatEuros()` et `formatKilometres()`, dans `src/lib/format.ts`. Ils produisent la typographie française attendue — `6 000 km`, `1 000 €` — avec des espaces insécables. N'écrivez jamais un espace insécable à la main dans une chaîne : c'est un caractère invisible dans le code.
 
+### Ajouter une photo
+
+Aucune ligne de code à changer : déposez le fichier dans `public/photos/` avec le bon nom, et il remplace son emplacement réservé (ou son dessin) au prochain chargement de la page.
+
+| Fichier | Photo | Où elle apparaît | Format conseillé |
+| --- | --- | --- | --- |
+| `equipage.jpg` | Romain et Catalin ensemble | Accueil et page Contact | Paysage, 2 400 px de large ou plus |
+| `romain.jpg` | Portrait de Romain | Page L'équipage | Portrait 3:4, 900 × 1 200 px ou plus |
+| `catalin.jpg` | Portrait de Catalin | Page L'équipage | Portrait 3:4, 900 × 1 200 px ou plus |
+| `4l.jpg` | La 4L, une fois achetée | Page Le parcours | Paysage, 2 400 px de large ou plus |
+| `fournitures.jpg` | Les fournitures collectées | Page Nous aider | Paysage, 2 400 px de large ou plus |
+
+Les extensions `.jpg`, `.jpeg`, `.png`, `.webp` et `.avif` sont acceptées. La photo est recadrée pour remplir son cadre (3:2 en paysage, 3:4 en portrait) : gardez le sujet au centre. Elle est redimensionnée à la volée par `next/image`, donc un fichier lourd ne ralentit pas la page.
+
+Tant que `equipage.jpg` manque, les deux portraits s'affichent côte à côte à sa place, sur l'accueil et la page Contact (`src/components/ui/GroupPhoto.tsx`) ; la photo de groupe les remplace dès qu'elle est déposée.
+
+La recherche du fichier est dans `src/server/photos.ts`, l'affichage dans `src/components/ui/Photo.tsx`. Le nom du portrait de chaque membre est dans `src/content/crew.ts` (`photo`).
+
 ### Ajouter un sponsor
 
 Dans `src/content/sponsors.ts` :
@@ -146,27 +165,31 @@ Un sponsor en formule D apparaît automatiquement en page d'accueil : c'est une 
 
 ## Direction artistique
 
-La charte est celle de **l'affiche officielle du 4L Trophy 2027** (`public/imgs/affiche-2027.jpeg`) : un ciel de coucher de soleil rouge, orange et jaune, du texte blanc, une 4L en silhouette. Les teintes de l'affiche sont relevées au pixel sur l'image ; le bleu nuit et le rouge carmin sont les couleurs propres à l'équipage.
+La référence complète est [CHARTE-GRAPHIQUE.md](CHARTE-GRAPHIQUE.md) : couleurs, typographie, verre, scène de fond, composants, mouvement. Ce qui suit en est le résumé.
+
+La charte est celle de **l'affiche officielle du 4L Trophy 2027** (`docs/references/affiche-2027.jpeg`) : un ciel de coucher de soleil rouge, orange et jaune, du texte blanc, une 4L en silhouette. Les teintes de l'affiche sont relevées au pixel sur l'image ; le bleu nuit et le rouge carmin sont les couleurs propres à l'équipage.
 
 | Token | Hex | Usage |
 | --- | --- | --- |
 | `poster-red` | `#ff153a` | ciel du site (haut du dégradé), badge de formule |
 | `vermilion` | `#ff3d37` | ciel du site (milieu du dégradé) |
 | `poster-orange` | `#ff7a36` | ciel du site (bas du dégradé), schémas |
-| `poster-yellow` | `#ffd251` | halo du soleil, phare de la 4L, accent **sur bleu nuit uniquement** |
+| `poster-yellow` | `#ffd251` | halo du soleil, accent **sur bleu nuit uniquement** |
 | `peach` | `#feb87c` | halo du soleil, graphique du budget |
 | `night` | `#18182b` | silhouettes, verre fumé, boutons |
 | `crimson` | `#b2112c` | dune lointaine, crépuscule |
 | `plum` | `#3a1236` | crépuscule, dune proche |
 | `paper` | `#fbf7ee` | texte clair sur badges, schémas |
+| `sun` | `#ffdc7c` | disque du soleil et phare de la 4L |
 
 Cinq couleurs **de contexte** (`ink`, `ink-soft`, `accent`, `line`, `ink-inverse`) changent de valeur selon le support : blanc sur le ciel du site et sur le verre, blanc et jaune dans `.surface-dark`. Les composants les utilisent au lieu de couleurs fixes, ce qui leur permet de vivre sur n'importe quel fond.
 
-Trois polices, chargées par `next/font/google` donc auto-hébergées (`src/styles/fonts.ts`), choisies pour leur ressemblance avec celles de l'affiche :
+Quatre polices, chargées par `next/font/google` donc auto-hébergées (`src/styles/fonts.ts`), choisies pour leur ressemblance avec celles de l'affiche :
 
-- **Jaro** (`font-display`) : très grands titres et chiffres, à la manière du « 4L TROPHY » ;
-- **Kaushan Script** (`font-script`, classe `.eyebrow`) : accroches au pinceau, inclinées, à la manière du « Desert Aventure ! » ;
-- **Montserrat** (`font-heading` et texte courant) : capitales grasses et texte.
+- **Squada One** (`font-display`) : très grands titres et chiffres, à la manière du « 4L TROPHY » ;
+- **Permanent Marker** (`font-script`, classe `.eyebrow`) : accroches écrites au feutre, inclinées, à la manière du « Desert Aventure ! » ;
+- **Bricolage Grotesque** (`font-heading` et texte courant) : capitales grasses et texte ;
+- **Kaushan Script** (`font-quote`) : la citation au pinceau, et elle seule.
 
 **Le verre** (`.glass`, `src/styles/glass.css`) habille tous les encadrés : le ciel, flouté, se voit à travers ; un liseré clair en dessine le bord ; le soleil s'y reflète, du côté où il se trouve, et le reflet s'éteint à mesure que la nuit tombe. `.glass-dark` donne un verre fumé pour les blocs qui doivent trancher (grand chiffre, formule principale).
 
@@ -200,7 +223,7 @@ Le seul moyen de revenir au statique serait d'autoriser `'unsafe-inline'` sur `s
 
 Cible : **WCAG 2.2 niveau AA**. Le site s'adresse à des dirigeants de tout âge, souvent sur mobile.
 
-**Audit à refaire.** Le dernier audit complet (Lighthouse 100 en accessibilité, axe-core sans violation, navigation au clavier) date d'avant la refonte aux couleurs de l'affiche. Point connu : le texte blanc posé directement sur le rouge de l'affiche atteint 3,9:1, suffisant pour les grands titres (3:1) mais sous le seuil AA du texte courant (4,5:1) ; il remonte sur le verre et à mesure que la nuit tombe.
+**Dernier audit : 14 octobre 2026**, avec axe-core 4.10 sur les huit pages, en 1440 px et en 390 px, en haut et en bas de page. Aucune violation de structure : titres, repères, noms accessibles, langue, cibles tactiles, images. Une seule règle échoue, le **contraste** du texte blanc posé directement sur le ciel : 4,1:1 sur le rouge du haut, 3,5:1 sur le vermillon et 2,6:1 sur l'orange du bas, pour un seuil AA de 4,5:1 en texte courant (3:1 pour les grands titres, qui passent sauf sur l'orange). Le contraste remonte sur le verre fumé (17:1) et à mesure que la nuit tombe. C'est le compromis de la direction artistique : le corriger demande d'assombrir le ciel ou de poser le texte courant sur du verre fumé. Non couverts par cet audit : la navigation au clavier et un lecteur d'écran, à tester à la main.
 
 À respecter en modifiant le site :
 
@@ -216,11 +239,12 @@ Le menu mobile s'appuie sur `<dialog>` en mode modal, ce qui donne le piégeage 
 
 ## Avant la mise en ligne
 
-1. Renseigner les **12 blocs `[À COMPLÉTER]`** : nom de l'association, cadre fiscal, téléphones et e-mails de Romain et Bastien, adresse du site, compte Instagram, identification de l'éditeur, directeur de la publication, hébergeur, durée de conservation des journaux.
-2. Fournir les **6 photos** : équipage (accueil et contact), portraits de Romain et de Bastien, la 4L, les fournitures collectées.
-3. Définir `NEXT_PUBLIC_SITE_URL` sur l'adresse réelle. Elle alimente les URL canoniques, le sitemap et les images Open Graph.
+1. Compléter le nom de famille du directeur de la publication (`ASSOCIATION.president` dans `src/content/crew.ts`) : les mentions légales n'ont aujourd'hui que son prénom. Il n'y a plus de bloc `[À COMPLÉTER]` sur le site.
+2. Déposer les **photos** dans `public/photos/` (voir « Ajouter une photo ») : équipage (accueil et contact), portraits de Romain et de Catalin. Deux photos viendront plus tard et sont remplacées d'ici là par un dessin (`Illustration`) : la 4L, achetée grâce aux premiers sponsors (page Parcours, `OrienteeringSection`), et les fournitures, réunies pendant la préparation (page Nous aider, `SuppliesSection`).
+3. L'adresse du site est `https://4l.lesfarfadets.net` (`PUBLIC_SITE_URL` dans `src/content/site.ts`) : elle alimente les URL canoniques, le sitemap, les images Open Graph et la page Contact. `NEXT_PUBLIC_SITE_URL` ne sert qu'à la remplacer pour un déploiement à une autre adresse.
 4. Remplacer l'icône d'onglet (`src/app/icon.tsx`), aujourd'hui une simple initiale faute de logo.
 5. Faire confirmer les couleurs relevées par le Design System.
+6. Héberger le site comme les pages légales l'annoncent : sur un VPS OVH, derrière un tunnel Cloudflare, avec des journaux d'accès supprimés après **six mois**. Tout écart (autre hébergeur, serveur personnel, autre intermédiaire) impose de corriger les mentions légales et la page Confidentialité avant la mise en ligne.
 
 `npm audit` remonte des vulnérabilités dans la chaîne ESLint uniquement. `npm audit --omit=dev` ne remonte rien : rien n'atteint le navigateur ni le serveur en production.
 
@@ -229,6 +253,7 @@ Le menu mobile s'appuie sur `<dialog>` en mode modal, ce qui donne le piégeage 
 - Reprendre les faits et montants de la fiche projet **tels quels**. Aucun chiffre inventé, aucun arrondi.
 - N'inventer **aucun** sponsor, témoignage, retombée média ou statistique.
 - Toute information manquante s'écrit `[À COMPLÉTER]`, **visiblement**, jamais devinée ni masquée.
-- **Ne mentionner aucun pourcentage de déduction fiscale** tant que le cadre fiscal n'est pas validé par l'association.
-- Ne pas utiliser le logo officiel du 4L Trophy. L'équipage n'a pas de logo : écrire « LES FARFADETS » en Jaro (`font-display`) ou au pinceau en Kaushan Script (`font-script`).
+- **Cadre fiscal** (`DONATION_TAX_RULES` dans `src/content/sponsorship.ts`) : la réduction d'impôt, 60 % pour une entreprise et 66 % pour un particulier, ne vaut que pour un **don sans contrepartie** et parce que l'association EFREI Motorsport (4L & Faons) délivre des reçus fiscaux, selon son président. Une formule de partenariat n'est pas un don : le logo sur la 4L est une contrepartie, donc une dépense de publicité déductible du résultat. Ne jamais présenter une formule comme ouvrant droit à la réduction. Taux et plafonds à revérifier chaque année sur impots.gouv.fr.
+- Ne pas afficher l'affiche officielle sur le site : elle porte le logo du 4L Trophy et ceux de ses partenaires, et l'organisation n'autorise aux équipages que le logo « 4L Trophy participant ». Elle reste dans `docs/references/`, hors de `public/`, donc hors ligne : c'est un modèle, pas un contenu.
+- Ne pas utiliser le logo officiel du 4L Trophy. L'équipage n'a pas de logo : écrire « LES FARFADETS » en Squada One (`font-display`) ou au feutre en Permanent Marker (`font-script`).
 - Ton : vouvoiement, « nous » pour l'équipage et « vous » pour le sponsor. Phrases courtes, une idée par phrase. Enthousiaste mais professionnel, sans superlatifs ni emoji.

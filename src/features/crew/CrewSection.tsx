@@ -13,7 +13,7 @@ export default function CrewSection() {
         id="titre"
         eyebrow="Qui sommes-nous"
         title="L'équipage"
-        lead="Deux amis passionnés d'automobile. Un profil mécanique, un profil numérique, et le même objectif : rallier Marrakech en Renault 4L."
+        lead="Deux amis passionnés d'automobile et d'informatique. Un profil industriel, un profil numérique, et le même objectif : rallier Marrakech en Renault 4L."
       />
 
       {CREW.map((member) => (

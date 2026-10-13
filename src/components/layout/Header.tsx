@@ -26,7 +26,7 @@ export default function Header() {
       <div className="mx-auto flex max-w-page items-center justify-between gap-4 px-4 pb-2 pt-5 sm:px-6 lg:px-12 2xl:px-20">
         <Link
           href="/"
-          className="inline-block -rotate-3 font-script text-4xl text-ink transition-transform duration-200 hover:rotate-0 sm:text-5xl"
+          className="inline-block -rotate-3 font-script text-3xl text-ink transition-transform duration-200 hover:rotate-0 sm:text-4xl"
         >
           Les Farfadets
         </Link>
@@ -63,7 +63,7 @@ export default function Header() {
         className={`${styles.menu} m-0 h-full max-h-none w-full max-w-none bg-poster-red p-0 text-ink backdrop:bg-night/60`}
       >
         <div className="flex items-center justify-between px-4 pb-2 pt-5 sm:px-6">
-          <span className="inline-block -rotate-3 font-script text-4xl text-ink">
+          <span className="inline-block -rotate-3 font-script text-3xl text-ink">
             Les Farfadets
           </span>
           <button

@@ -2,7 +2,7 @@ import { existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { BUDGET } from "./budget";
-import { CONTACTS } from "./contact";
+import { CONTACTS, SOCIAL_LINKS } from "./contact";
 import { ASSOCIATION, CREW } from "./crew";
 import { EVENT } from "./event";
 import { STAGES } from "./route";
@@ -117,10 +117,17 @@ describe("raid et équipage", () => {
     for (const member of CREW) {
       expect(member.role, member.firstName).not.toBe("");
       expect(member.bio.length, member.firstName).toBeGreaterThan(0);
+      expect(member.photo, member.firstName).toMatch(/^[a-z0-9-]+$/);
     }
     expect(CONTACTS.map((contact) => contact.firstName)).toEqual(
       CREW.map((member) => member.firstName),
     );
+  });
+
+  it("le compte Instagram est un nom de compte, pas une adresse", () => {
+    if (SOCIAL_LINKS.instagram) {
+      expect(SOCIAL_LINKS.instagram).toMatch(/^[a-z0-9._]+$/);
+    }
   });
 
   it("les coordonnées renseignées sont bien formées", () => {

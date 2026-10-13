@@ -20,7 +20,7 @@ export default function BudgetSection() {
       <div className="mt-8">
         <BudgetChart />
       </div>
-      <p className="mt-6 max-w-text text-sm text-ink-soft">
+      <p className="reveal mt-6 max-w-text text-sm text-ink-soft">
         Montants prévisionnels. Sur le graphique, les quatre postes les plus
         légers (assurance, équipements, communication, imprévus) sont regroupés
         : {formatEuros(budgetSlices(BUDGET.lines).othersTotal)} au total.

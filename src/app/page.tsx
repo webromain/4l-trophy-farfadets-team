@@ -7,6 +7,7 @@ import RoutePreview from "@/features/route/RoutePreview";
 import StagesMarquee from "@/features/route/StagesMarquee";
 import SolidaritySection from "@/features/event/SolidaritySection";
 import ReasonsPreview from "@/features/sponsors/ReasonsPreview";
+import TaxSection from "@/features/sponsors/TaxSection";
 import BudgetSection from "@/features/budget/BudgetSection";
 import ContactPreview from "@/features/contact/ContactPreview";
 
@@ -25,6 +26,7 @@ export default function HomePage() {
       <StagesMarquee />
       <SolidaritySection />
       <ReasonsPreview />
+      <TaxSection />
       <BudgetSection />
       <ContactPreview />
     </>

@@ -11,7 +11,7 @@ export default function ContactPreview() {
         title="Parlons-en"
         lead="Vous souhaitez voir votre logo traverser le désert ? Un appel ou un rendez-vous suffit pour en discuter."
       />
-      <div className="flex flex-wrap gap-4">
+      <div className="reveal flex flex-wrap gap-4">
         <Button href="/contact">Nous contacter</Button>
         <Button href="/nous-aider" variant="secondary">
           Aider autrement

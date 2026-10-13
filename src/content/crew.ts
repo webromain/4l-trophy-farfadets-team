@@ -1,12 +1,12 @@
 /* Les deux membres de l'équipage et l'association qui porte le projet. */
 
-import { TO_COMPLETE } from "./site";
-
 export type CrewMember = {
   readonly firstName: string;
   readonly name: string;
   readonly role: string;
   readonly bio: readonly string[];
+  /* Nom du fichier de son portrait dans `public/photos/`, sans extension. */
+  readonly photo: string;
   readonly photoLabel: string;
 };
 
@@ -18,23 +18,39 @@ export const CREW: readonly CrewMember[] = [
     bio: [
       "Étudiant à l'Efrei, en Mastère M1 Manager Développeur Full Stack.",
       "Titulaire d'un Bachelor Développeur en intelligence artificielle et data science.",
-      "En alternance chez Thales comme apprenti ingénieur développement web.",
+      "En alternance chez Thales Services Numériques comme apprenti ingénieur développement web.",
     ],
+    photo: "romain",
     photoLabel: "Photo de Romain",
   },
   {
-    firstName: "Bastien",
-    name: "Grangeon",
+    firstName: "Catalin",
+    name: "Stefanescu",
     role: "Mécanique et préparation de la 4L",
     bio: [
-      "Jeune diplômé d'un Bachelor Chargé d'études en conception des systèmes mécaniques, spécialisé en conception 3D.",
-      "Actuellement à la recherche d'un CDI.",
+      "Étudiant en 3e année de BUT Génie industriel et maintenance à l'IUT de Mantes-en-Yvelines.",
+      "En parallèle, élève de 1re année à l'ISTY, école d'ingénieurs, en Systèmes numériques pour l'industrie.",
+      "Expérience de terrain en maintenance, en automatismes et en systèmes embarqués.",
     ],
-    photoLabel: "Photo de Bastien",
+    photo: "catalin",
+    photoLabel: "Photo de Catalin",
   },
 ];
 
+/* Les portraits de l'équipage : affichés côte à côte tant que la photo des deux
+   ensemble n'existe pas. */
+export const CREW_PORTRAITS = CREW.map((member) => ({
+  name: member.photo,
+  alt: `Portrait de ${member.firstName} ${member.name}`,
+  label: member.photoLabel,
+}));
+
 export const ASSOCIATION = {
-  name: TO_COMPLETE,
+  /* Son nom officiel, suivi de celui sous lequel elle porte le projet. */
+  name: "EFREI Motorsport (4L & Faons)",
+  /* Son président : directeur de la publication du site, qu'elle édite. */
+  president: "Matéo",
+  /* Son siège : c'est l'adresse de l'école. */
+  address: "30-32 avenue de la République, 94800 Villejuif",
   grant: 1000,
 } as const;

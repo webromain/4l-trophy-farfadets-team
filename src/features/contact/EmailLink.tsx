@@ -9,7 +9,7 @@ export default function EmailLink({ email }: { email: Email }) {
   return (
     <a
       href={`mailto:${email.user}@${email.domain}`}
-      className="inline-flex min-h-11 items-center font-semibold text-accent underline underline-offset-4 hover:text-ink"
+      className="inline-flex min-h-11 items-center font-semibold text-accent underline underline-offset-4 transition-colors duration-200 hover:text-ink"
     >
       <span>{email.user}</span>
       <span>@</span>

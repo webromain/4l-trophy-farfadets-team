@@ -1,15 +1,23 @@
+import Photo from "@/components/ui/Photo";
 import PhotoPlaceholder from "@/components/ui/PhotoPlaceholder";
 import type { CrewMember } from "@/content/crew";
 
 export default function CrewMemberCard({ member }: { member: CrewMember }) {
   return (
     <div className="mb-10 grid gap-6 sm:grid-cols-[180px_1fr] sm:gap-8">
-      <PhotoPlaceholder
-        label={member.photoLabel}
-        caption="Portrait, à fournir"
+      <Photo
+        name={member.photo}
+        alt={`Portrait de ${member.firstName} ${member.name}`}
         format="portrait"
+        fallback={
+          <PhotoPlaceholder
+            label={member.photoLabel}
+            caption="Portrait, à fournir"
+            format="portrait"
+          />
+        }
       />
-      <div>
+      <div className="reveal">
         <h2 className="font-heading text-label uppercase text-accent">
           {member.role}
         </h2>

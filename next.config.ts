@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
     agentFeedback: true,
   },
   poweredByHeader: false,
+  /* Les photos déposées dans `public/photos/` sont cherchées sur le disque au
+     rendu (src/server/photos.ts) : sans cette ligne, un hébergement « serverless »
+     ne les embarquerait pas avec le code des pages. */
+  outputFileTracingIncludes: {
+    "/*": ["public/photos/**/*"],
+  },
   turbopack: {
     rules: {
       "*.css": {

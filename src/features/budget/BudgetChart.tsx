@@ -1,17 +1,20 @@
 import { BUDGET } from "@/content/budget";
 import { formatEuros } from "@/lib/format";
-import { budgetSlices } from "./slices";
+import { DETAILED_LINES, budgetSlices } from "./slices";
 
 const RADIUS = 60;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
+/* Les couleurs du ciel au coucher du soleil, du sable au carmin, après le bleu
+   nuit du plus gros poste : un jaune clair à sa place se confondait avec le
+   sable. */
 const DETAILED_COLORS = [
-  "var(--color-paper)",
-  "var(--color-poster-yellow)",
   "var(--color-night)",
+  "var(--color-peach)",
   "var(--color-poster-orange)",
+  "var(--color-vermilion)",
 ];
-const OTHERS_COLOR = "var(--color-peach)";
+const OTHERS_COLOR = "var(--color-crimson)";
 
 /* Le donut reprend le découpage du book : les postes les plus légers y sont
    regroupés. Le tableau ci-dessous reste l'équivalent textuel, poste par poste. */
@@ -59,9 +62,34 @@ function Donut() {
   );
 }
 
+/* Pastille de la couleur de la part du donut : elle relie chaque ligne du tableau
+   au graphique. Les postes regroupés partagent la même. Un SVG, pas un fond posé
+   par `style` : la CSP à nonce (proxy.ts) bloquerait ce dernier. Le liseré clair
+   garde les teintes sombres lisibles sur le verre. */
+function SliceDot({ index }: { index: number }) {
+  return (
+    <svg
+      viewBox="0 0 12 12"
+      aria-hidden="true"
+      focusable="false"
+      className="size-3.5 shrink-0"
+    >
+      <circle
+        cx="6"
+        cy="6"
+        r="5.5"
+        fill={index < DETAILED_LINES ? DETAILED_COLORS[index] : OTHERS_COLOR}
+        stroke="var(--color-ink)"
+        strokeOpacity="0.6"
+        strokeWidth="1"
+      />
+    </svg>
+  );
+}
+
 export default function BudgetChart() {
   return (
-    <div className="glass flex flex-col gap-8 rounded-panel p-6 sm:p-8 lg:flex-row lg:items-start">
+    <div className="reveal glass flex flex-col gap-8 rounded-panel p-6 sm:p-8 lg:flex-row lg:items-start">
       <Donut />
       <table className="w-full border-collapse text-left">
         <caption className="sr-only">
@@ -71,23 +99,26 @@ export default function BudgetChart() {
           <tr className="border-b-2 border-ink">
             <th
               scope="col"
-              className="py-2 font-heading text-label uppercase text-ink"
+              className="py-2 font-heading text-lg font-extrabold uppercase tracking-[0.12em] text-ink"
             >
               Poste
             </th>
             <th
               scope="col"
-              className="py-2 text-right font-heading text-label uppercase text-ink"
+              className="py-2 text-right font-heading text-lg font-extrabold uppercase tracking-[0.12em] text-ink"
             >
               Montant
             </th>
           </tr>
         </thead>
         <tbody>
-          {BUDGET.lines.map((line) => (
+          {BUDGET.lines.map((line, index) => (
             <tr key={line.label} className="border-b border-line">
               <th scope="row" className="py-3 pr-4 font-normal text-ink">
-                {line.label}
+                <span className="flex items-center gap-3">
+                  <SliceDot index={index} />
+                  {line.label}
+                </span>
               </th>
               <td className="py-3 text-right font-semibold tabular-nums text-ink">
                 {formatEuros(line.amount)}

@@ -19,7 +19,7 @@ export default function SectionTitle({
   const sizeClass = as === "h1" ? "text-page-title" : "text-section-title";
 
   return (
-    <div className={as === "h2" ? "reveal mb-10" : "mb-10"}>
+    <div className={as === "h2" ? "reveal mb-10" : "enter mb-10"}>
       <p className="eyebrow text-accent">{eyebrow}</p>
       <Heading
         id={id}

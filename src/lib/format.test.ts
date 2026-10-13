@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { formatEuros, formatKilometres, formatNumber } from "./format";
+import {
+  formatEuros,
+  formatKilometres,
+  formatNumber,
+  formatPercent,
+} from "./format";
 
 const NBSP = "\u00a0";
 const NARROW_NBSP = "\u202f";
@@ -22,5 +27,10 @@ describe("mise en forme des nombres", () => {
   it("colle l'unité au nombre par une espace insécable", () => {
     expect(formatEuros(2500)).toBe(`2${NBSP}500${NBSP}€`);
     expect(formatKilometres(6000)).toBe(`6${NBSP}000${NBSP}km`);
+  });
+
+  it("écrit les pourcentages avec une virgule et une espace insécable", () => {
+    expect(formatPercent(60)).toBe(`60${NBSP}%`);
+    expect(formatPercent(0.5)).toBe(`0,5${NBSP}%`);
   });
 });

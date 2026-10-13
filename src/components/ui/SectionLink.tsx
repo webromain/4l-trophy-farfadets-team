@@ -10,7 +10,7 @@ export default function SectionLink({ href, children }: SectionLinkProps) {
   return (
     <Link
       href={href}
-      className="mt-8 inline-flex min-h-11 items-center font-heading text-sm font-extrabold uppercase tracking-[0.12em] text-accent underline decoration-2 underline-offset-8 hover:decoration-4"
+      className="reveal mt-8 inline-flex min-h-11 items-center font-heading text-sm font-extrabold uppercase tracking-[0.12em] text-accent underline decoration-2 underline-offset-8 transition-[text-decoration-thickness] duration-200 hover:decoration-4"
     >
       {children}
     </Link>

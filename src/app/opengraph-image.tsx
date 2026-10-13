@@ -61,7 +61,7 @@ export default function Image() {
         {`${formatKilometres(EVENT.distanceKm)} · 3 pays · ${EVENT.days} jours`}
       </div>
       <div style={{ color: "#ffffff", fontSize: 34, marginTop: 28 }}>
-        Romain Poisson et Bastien Grangeon
+        Romain Poisson et Catalin Stefanescu
       </div>
     </div>,
     size,

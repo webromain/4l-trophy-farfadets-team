@@ -7,15 +7,15 @@ export default function NextStepsSection() {
     <Section headingId="suite">
       <h2
         id="suite"
-        className="font-display text-section-title uppercase text-ink"
+        className="reveal font-display text-section-title uppercase text-ink"
       >
         La suite
       </h2>
-      <p className="mt-6 max-w-text text-lg leading-relaxed text-ink">
+      <p className="reveal mt-6 max-w-text text-lg leading-relaxed text-ink">
         Une formule vous intéresse, ou vous préférez nous aider autrement ?
         Écrivez-nous, nous en discutons.
       </p>
-      <div className="mt-8 flex flex-wrap gap-4">
+      <div className="reveal mt-8 flex flex-wrap gap-4">
         <Button href="/contact">Nous contacter</Button>
         <Button href="/nous-aider" variant="secondary">
           Aider autrement

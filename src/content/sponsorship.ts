@@ -1,6 +1,6 @@
 /* L'offre faite aux sponsors : formules, arguments, soutien en nature, dossier PDF. */
 
-import { formatKilometres } from "@/lib/format";
+import { formatEuros, formatKilometres, formatPercent } from "@/lib/format";
 import { EVENT } from "./event";
 import type { TitledItem } from "./types";
 
@@ -122,6 +122,29 @@ export const IN_KIND_SUPPORT: readonly TitledItem[] = [
     title: "Équipement",
     description:
       "Le matériel obligatoire et l'outillage dont nous avons besoin pour le raid.",
+  },
+];
+
+/* Réduction d'impôt pour un don fait sans contrepartie : taux et plafonds fixés
+   par la loi (articles 200 et 238 bis du Code général des impôts), à revérifier
+   chaque année sur impots.gouv.fr. Elle suppose un reçu fiscal, que l'association
+   délivre. Une formule de partenariat n'est pas un don : le logo sur la 4L est une
+   contrepartie, donc une dépense de publicité. */
+const COMPANY_RATE = 60;
+const INDIVIDUAL_RATE = 66;
+
+function costAfterReduction(gift: number, rate: number): string {
+  return formatEuros((gift * (100 - rate)) / 100);
+}
+
+export const DONATION_TAX_RULES: readonly TitledItem[] = [
+  {
+    title: "Votre entreprise fait un don",
+    description: `Réduction d'impôt de ${formatPercent(COMPANY_RATE)} du montant, dans la limite de ${formatEuros(20000)} par an, ou de ${formatPercent(0.5)} du chiffre d'affaires si ce montant est plus élevé. Un don de ${formatEuros(1000)} vous revient à ${costAfterReduction(1000, COMPANY_RATE)}.`,
+  },
+  {
+    title: "Vous donnez à titre personnel",
+    description: `Réduction d'impôt de ${formatPercent(INDIVIDUAL_RATE)} du montant, dans la limite de ${formatPercent(20)} de votre revenu imposable. Un don de ${formatEuros(100)} vous revient à ${costAfterReduction(100, INDIVIDUAL_RATE)}.`,
   },
 ];
 

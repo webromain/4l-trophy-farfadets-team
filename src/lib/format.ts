@@ -19,3 +19,12 @@ export function formatEuros(value: number): string {
 export function formatKilometres(value: number): string {
   return `${formatNumber(value)}${NBSP}km`;
 }
+
+const frenchDecimal = new Intl.NumberFormat("fr-FR", {
+  maximumFractionDigits: 1,
+});
+
+/* Un pourcentage garde une décimale au plus : « 0,5 % ». */
+export function formatPercent(value: number): string {
+  return `${frenchDecimal.format(value)}${NBSP}%`;
+}

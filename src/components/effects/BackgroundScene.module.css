@@ -1,14 +1,20 @@
 /* FOND DU SITE
 
    Le ciel de l'affiche, fixe derrière tout le contenu. `--page-progress` (0 en haut
-   de la page, 1 en bas) fait tomber la nuit : le halo du soleil s'enfonce, le
+   de la page, 1 en bas) fait tomber la nuit : le soleil et son halo s'enfoncent, le
    crépuscule recouvre le ciel, les étoiles sortent et la 4L traverse l'écran. */
 
+/* Le rouge du haut du ciel est celui de l'affiche, très légèrement adouci. */
 .sky {
+  --sky-red: color-mix(
+    in srgb,
+    var(--color-poster-red) 90%,
+    var(--color-crimson)
+  );
   background-image: linear-gradient(
     to bottom,
-    var(--color-poster-red) 0%,
-    var(--color-poster-red) 40%,
+    var(--sky-red) 0%,
+    var(--sky-red) 40%,
     var(--color-vermilion) 62%,
     var(--color-poster-orange) 100%
   );
@@ -20,6 +26,30 @@
     var(--color-peach) 38%,
     transparent 100%
   );
+}
+/* Le disque est posé à son point de coucher, sous l'horizon, et tourne autour
+   d'un centre situé à sa droite, à `--sun-radius` : `--sun-sweep` le remonte le
+   long de ce cercle jusqu'à son point de départ, en haut à droite. Écran en
+   hauteur (téléphone) : un cercle plus grand et un angle plus petit, pour que
+   l'arc tienne dans la largeur. */
+.sunDisc {
+  --sun-radius: 234vh;
+  --sun-sweep: 19.5deg;
+  top: 100%;
+  left: 55vw;
+  transform-origin: calc(50% + var(--sun-radius)) 50%;
+  transform: rotate(var(--sun-sweep));
+  /* Un aplat, sans dégradé ni lueur : le même dessin simple que les dunes. */
+  background-color: var(--color-sun);
+}
+@media (orientation: landscape) {
+  /* Le `min` garde le point de départ dans l'écran quand la fenêtre est presque
+     carrée. */
+  .sunDisc {
+    --sun-radius: 96vh;
+    --sun-sweep: 54.3deg;
+    left: min(60vw, calc(100vw - 40vh - 12vmin));
+  }
 }
 .dusk {
   opacity: 0;
@@ -53,6 +83,15 @@
   to {
     transform: translateY(32vh) scale(0.8);
     opacity: 0.3;
+  }
+}
+/* La course du soleil : un arc de cercle, parcouru à vitesse constante. Il a
+   disparu derrière les dunes peu après la moitié de la page. */
+@keyframes sun-arc {
+  55%,
+  100% {
+    transform: rotate(0deg);
+    filter: hue-rotate(-30deg) saturate(1.4) brightness(0.92);
   }
 }
 @keyframes dusk {
@@ -101,6 +140,10 @@
 
 :global(.scroll-effects) .sun {
   animation: sun-set 1s linear both paused;
+  animation-delay: calc(var(--page-progress, 0) * -1s);
+}
+:global(.scroll-effects) .sunDisc {
+  animation: sun-arc 1s linear both paused;
   animation-delay: calc(var(--page-progress, 0) * -1s);
 }
 :global(.scroll-effects) .dusk {

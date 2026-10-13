@@ -18,7 +18,9 @@ function sourceFiles(directory: string): string[] {
 const FILES = sourceFiles(SRC)
   .filter((path) => !path.includes(".test."))
   .map((path) => {
-    const file = relative(SRC, path);
+    /* Sous Windows, `relative` sépare par des « \ » : tout le fichier compare
+       des chemins écrits avec des « / ». */
+    const file = relative(SRC, path).replaceAll("\\", "/");
     const imports = [
       ...readFileSync(path, "utf8").matchAll(/from\s+"([^"]+)"/g),
     ].map((match) => match[1]);

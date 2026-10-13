@@ -8,7 +8,7 @@ export default function MainPartnerSection() {
 
   return (
     <Section headingId="partenaire-principal">
-      <div className="glass rounded-panel p-6 sm:p-8">
+      <div className="reveal glass rounded-panel p-6 sm:p-8">
         <h2 id="partenaire-principal" className="eyebrow text-accent">
           Partenaire principal
         </h2>

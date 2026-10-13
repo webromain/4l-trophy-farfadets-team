@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Section from "@/components/ui/Section";
 import SectionTitle from "@/components/ui/SectionTitle";
-import ToComplete from "@/components/ui/ToComplete";
 
 export const metadata: Metadata = {
   title: "Confidentialité",
   description:
-    "Ce site ne dépose aucun cookie, n'utilise aucun traceur et n'héberge aucune donnée personnelle. Les polices sont servies depuis notre propre serveur.",
+    "Ce site ne dépose aucun cookie et n'utilise aucun traceur. Les polices sont servies depuis notre propre serveur ; seuls des journaux techniques sont conservés, six mois.",
 };
 
 const HEADING_CLASS = "mt-10 font-heading text-2xl font-bold text-ink";
@@ -20,10 +19,10 @@ export default function PrivacyPage() {
         id="titre"
         eyebrow="Informations légales"
         title="Confidentialité"
-        lead="Ce site est volontairement simple : il se contente d'afficher des pages. Il ne vous suit pas, ne vous identifie pas et ne conserve rien sur vous."
+        lead="Ce site est volontairement simple : il se contente d'afficher des pages. Il ne vous suit pas et ne cherche pas à vous identifier."
       />
 
-      <div className="glass rounded-panel p-6 sm:p-10 [&>h2:first-child]:mt-0">
+      <div className="enter glass rounded-panel p-6 [--enter-step:2] sm:p-10 [&>h2:first-child]:mt-0">
         <h2 className={HEADING_CLASS}>Aucun cookie, aucun traceur</h2>
         <p className={TEXT_CLASS}>
           Le site ne dépose aucun cookie, ni technique ni publicitaire. Il
@@ -32,18 +31,24 @@ export default function PrivacyPage() {
           consentement ne vous est présentée : il n&apos;y a rien à consentir.
         </p>
 
-        <h2 className={HEADING_CLASS}>Aucune requête vers un service tiers</h2>
+        <h2 className={HEADING_CLASS}>Aucun contenu chargé ailleurs</h2>
         <p className={TEXT_CLASS}>
-          Les polices de caractères (Barlow, Barlow Condensed et Playfair
-          Display) sont servies depuis notre propre serveur, pas depuis Google
-          Fonts. Afficher une page de ce site n&apos;envoie donc aucune
-          information, votre adresse IP comprise, à un service extérieur.
+          Les polices de caractères (Squada One, Bricolage Grotesque, Permanent
+          Marker et Kaushan Script) sont servies depuis notre propre serveur,
+          pas depuis Google Fonts. Les pages ne chargent ni image, ni script, ni
+          police depuis un autre site.
         </p>
         <p className={TEXT_CLASS}>
-          Seule exception : si vous cliquez sur le lien du site d&apos;un
-          partenaire, vous quittez notre site et la politique de confidentialité
-          de ce partenaire s&apos;applique. Les logos de nos partenaires sont,
-          eux, hébergés chez nous.
+          Deux prestataires techniques acheminent et servent les pages : OVH,
+          qui héberge le site en France, et Cloudflare, par qui passe la
+          connexion entre votre navigateur et le serveur. Ils traitent à ce
+          titre votre adresse IP, le temps de vous répondre.
+        </p>
+        <p className={TEXT_CLASS}>
+          Par ailleurs, si vous cliquez sur le lien de notre compte Instagram ou
+          du site d&apos;un partenaire, vous quittez notre site et la politique
+          de confidentialité du service concerné s&apos;applique. Les logos de
+          nos partenaires sont, eux, hébergés chez nous.
         </p>
 
         <h2 className={HEADING_CLASS}>Aucun formulaire</h2>
@@ -56,26 +61,28 @@ export default function PrivacyPage() {
 
         <h2 className={HEADING_CLASS}>Journaux de connexion</h2>
         <p className={TEXT_CLASS}>
-          Comme tout site, celui-ci est servi par un hébergeur qui peut
-          conserver des journaux techniques de connexion. Nous n&apos;y accédons
-          pas et ne les exploitons pas.
+          Comme tout serveur web, celui qui héberge ce site enregistre des
+          journaux techniques de connexion : adresse IP, date et heure, page
+          demandée, navigateur utilisé.
         </p>
-        <div className="mt-4">
-          <ToComplete label="durée de conservation des journaux">
-            <p>
-              À préciser une fois l&apos;hébergeur choisi : durée de
-              conservation des journaux de connexion et coordonnées de son
-              délégué à la protection des données, le cas échéant.
-            </p>
-          </ToComplete>
-        </div>
+        <p className={TEXT_CLASS}>
+          Ces journaux servent uniquement à assurer la sécurité du serveur et à
+          diagnostiquer les pannes. Ils ne sont ni croisés avec d&apos;autres
+          données, ni utilisés pour mesurer l&apos;audience, ni transmis à des
+          tiers, sauf demande d&apos;une autorité habilitée.
+        </p>
+        <p className={TEXT_CLASS}>
+          Ils sont conservés six mois, puis supprimés automatiquement. Cette
+          durée suit la recommandation de la CNIL sur la journalisation, qui
+          préconise entre six mois et un an.
+        </p>
 
         <h2 className={HEADING_CLASS}>Vos droits</h2>
         <p className={TEXT_CLASS}>
-          Nous ne constituons aucun fichier à partir de ce site. Si vous nous
-          avez écrit et souhaitez que nous effacions votre message et vos
-          coordonnées, demandez-le-nous : nous le faisons sans délai. Vous
-          pouvez également saisir la CNIL.
+          En dehors de ces journaux, nous ne constituons aucun fichier à partir
+          de ce site. Si vous nous avez écrit et souhaitez que nous effacions
+          votre message et vos coordonnées, demandez-le-nous : nous le faisons
+          sans délai. Vous pouvez également saisir la CNIL.
         </p>
 
         <h2 className={HEADING_CLASS}>Mise à jour</h2>

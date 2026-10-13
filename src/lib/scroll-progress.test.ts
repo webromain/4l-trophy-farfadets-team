@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   REVEAL_SHARE,
   clamp,
+  entryProgress,
   pageProgress,
   reflectionPoint,
   revealProgress,
@@ -98,5 +99,21 @@ describe("reflectionPoint", () => {
     const point = reflectionPoint(sun, panel);
     expect(point.x).toBeLessThan(0);
     expect(point.y).toBeLessThan(0);
+  });
+});
+
+describe("entryProgress", () => {
+  it("part de 0 à l'entrée dans l'écran", () => {
+    expect(entryProgress(VIEWPORT, 200, VIEWPORT)).toBe(0);
+  });
+
+  it("vaut 1 dès que l'élément est entièrement visible, même en bas de page", () => {
+    expect(entryProgress(VIEWPORT - 200, 200, VIEWPORT)).toBe(1);
+    expect(entryProgress(100, 200, VIEWPORT)).toBe(1);
+  });
+
+  it("se termine quand un élément plus haut que l'écran le remplit", () => {
+    expect(entryProgress(VIEWPORT / 2, 2000, VIEWPORT)).toBeCloseTo(0.5);
+    expect(entryProgress(0, 2000, VIEWPORT)).toBe(1);
   });
 });

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Section from "@/components/ui/Section";
 import SectionTitle from "@/components/ui/SectionTitle";
-import ToComplete from "@/components/ui/ToComplete";
+import { ASSOCIATION } from "@/content/crew";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 
 const HEADING_CLASS = "mt-10 font-heading text-2xl font-bold text-ink";
 const TEXT_CLASS = "mt-2 max-w-text leading-relaxed text-ink";
+const LINK_CLASS = "font-semibold underline underline-offset-4";
 
 export default function LegalNoticePage() {
   return (
@@ -22,41 +24,30 @@ export default function LegalNoticePage() {
         title="Mentions légales"
       />
 
-      <div className="glass rounded-panel p-6 sm:p-10 [&>h2:first-child]:mt-0">
+      <div className="enter glass rounded-panel p-6 [--enter-step:2] sm:p-10 [&>h2:first-child]:mt-0">
         <h2 className={HEADING_CLASS}>Éditeur du site</h2>
         <p className={TEXT_CLASS}>
-          Le site est édité par l&apos;association qui porte le projet « Les
-          Farfadets — 4L Trophy 2027 ».
+          {`Le site est édité par l'association ${ASSOCIATION.name}, qui porte le projet « Les Farfadets — 4L Trophy 2027 ». Son siège est au ${ASSOCIATION.address}.`}
         </p>
-        <div className="mt-4">
-          <ToComplete label="identification de l'éditeur">
-            <p>
-              Nom exact de l&apos;association, forme juridique, numéro RNA ou
-              SIREN, adresse du siège, adresse électronique et numéro de
-              téléphone.
-            </p>
-          </ToComplete>
-        </div>
+        <p className={TEXT_CLASS}>
+          Pour la joindre, les coordonnées de l&apos;équipage figurent sur la
+          page{" "}
+          <Link href="/contact" className={LINK_CLASS}>
+            Contact
+          </Link>
+          . Le site est réalisé par Romain Poisson, membre de l&apos;équipage.
+        </p>
 
         <h2 className={HEADING_CLASS}>Directeur de la publication</h2>
-        <div className="mt-2">
-          <ToComplete label="directeur de la publication">
-            <p>
-              Nom et qualité de la personne responsable de la publication, telle
-              que désignée par l&apos;association.
-            </p>
-          </ToComplete>
-        </div>
+        <p className={TEXT_CLASS}>
+          {`${ASSOCIATION.president}, président de l'association.`}
+        </p>
 
         <h2 className={HEADING_CLASS}>Hébergeur</h2>
-        <div className="mt-2">
-          <ToComplete label="hébergeur">
-            <p>
-              Raison sociale, adresse et numéro de téléphone de l&apos;hébergeur
-              retenu pour la mise en ligne.
-            </p>
-          </ToComplete>
-        </div>
+        <p className={TEXT_CLASS}>
+          Le site est hébergé par OVH SAS, 2 rue Kellermann, 59100 Roubaix,
+          France. Téléphone : 1007.
+        </p>
 
         <h2 className={HEADING_CLASS}>Propriété intellectuelle</h2>
         <p className={TEXT_CLASS}>

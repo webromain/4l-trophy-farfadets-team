@@ -1,0 +1,14 @@
+# Produits de build et dépendances
+.next
+node_modules
+package-lock.json
+next-env.d.ts
+
+# Écrit et réécrit par `next dev` : ne pas y toucher
+AGENTS.md
+
+# Fichiers servis tels quels
+public
+
+# La documentation garde sa mise en page manuelle
+*.md

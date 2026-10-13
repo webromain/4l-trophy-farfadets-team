@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Styles globaux, un fichier par rôle. L'ordre des imports est celui de la cascade.
+   Les styles propres à un seul composant sont à côté de lui, en module CSS
+   (`*.module.css`). */
+@import "./theme.css";
+@import "./surfaces.css";
+@import "./glass.css";
+@import "./typography.css";
+@import "./scroll-effects.css";
+@import "./track.css";
+@import "./base.css";

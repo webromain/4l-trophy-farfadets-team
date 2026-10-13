@@ -1,0 +1,22 @@
+/* Liens du menu : un trait se déploie sous le mot au survol. */
+.navLink {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 50% calc(100% - 0.4rem);
+  background-size: 0 3px;
+  transition: background-size 0.25s;
+}
+@media (hover: hover) {
+  .navLink:hover:not([aria-current="page"]) {
+    background-size: calc(100% - 2rem) 3px;
+  }
+}
+
+/* Le menu mobile reprend le ciel de l'affiche. */
+.menu {
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-poster-red) 45%,
+    var(--color-poster-orange) 100%
+  );
+}

@@ -1,0 +1,41 @@
+/* EFFETS AU SCROLL
+
+   Les animations sont en pause : c'est une progression de 0 à 1, posée à chaque
+   défilement par ScrollEffects.tsx, qui les place via un délai négatif. Le CSS natif
+   (`animation-timeline`) ferait la même chose sans script, mais Firefox ne le gère
+   pas encore. Sans la classe `scroll-effects` (pas de script, ou animations réduites
+   dans le système), le site s'affiche simplement sans effets. */
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+}
+@keyframes parallax {
+  from {
+    transform: translateY(var(--parallax-shift, 3rem));
+  }
+  to {
+    transform: translateY(calc(var(--parallax-shift, 3rem) * -1));
+  }
+}
+@keyframes marquee-slide {
+  to {
+    transform: translateX(-30%);
+  }
+}
+
+.scroll-effects .reveal {
+  animation: reveal 1s linear both paused;
+  animation-delay: calc(var(--progress, 1) * -1s);
+}
+.scroll-effects .parallax {
+  animation: parallax 1s linear both paused;
+  animation-delay: calc(var(--progress, 0.5) * -1s);
+}
+/* Bandes de très grands mots (Marquee.tsx) : elles glissent à l'horizontale. */
+.scroll-effects .marquee {
+  animation: marquee-slide 1s linear both paused;
+  animation-delay: calc(var(--progress, 0.5) * -1s);
+}

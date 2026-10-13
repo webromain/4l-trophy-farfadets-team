@@ -1,0 +1,15 @@
+/* Accroche manuscrite inclinée, comme le « Desert Aventure ! » de l'affiche. */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-script);
+  font-size: clamp(1.625rem, 3.4vw, 2.75rem);
+  line-height: 1.1;
+  transform: rotate(-3deg);
+  transform-origin: left bottom;
+}
+
+/* Lettres au contour seul : la typographie sert de décor. */
+.outline-text {
+  color: transparent;
+  -webkit-text-stroke: 2px rgb(255 255 255 / 0.7);
+}

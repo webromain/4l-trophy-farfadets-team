@@ -1,0 +1,61 @@
+/* `static` : toutes les variables sont émises, y compris celles que seul ce
+   fichier utilise (dégradés du fond). */
+@theme static {
+  /* Couleurs relevées sur l'affiche officielle du 4L Trophy 2027. */
+  --color-poster-red: #ff153a;
+  --color-vermilion: #ff3d37;
+  --color-poster-orange: #ff7a36;
+  --color-poster-yellow: #ffd251;
+  --color-peach: #feb87c;
+
+  /* Couleurs propres à l'équipage. */
+  --color-night: #18182b;
+  --color-crimson: #b2112c;
+  --color-plum: #3a1236;
+  --color-paper: #fbf7ee;
+
+  /* Couleurs de contexte : valeurs pour le texte posé sur le fond du site,
+     redéfinies dans `.surface-dark`. */
+  --color-ink: #ffffff;
+  --color-ink-soft: #ffffff;
+  --color-accent: #ffffff;
+  --color-line: rgb(255 255 255 / 0.45);
+  --color-ink-inverse: #18182b;
+
+  /* Polices choisies pour leur ressemblance avec celles de l'affiche. */
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jaro), Impact, "Arial Narrow Bold", sans-serif;
+  --font-script: var(--font-kaushan), "Segoe Script", cursive;
+
+  /* La page occupe toute la largeur de l'écran ; ce plafond (3520 px) ne joue
+     qu'au-delà de la 4K. */
+  --container-page: 220rem;
+  --container-text: 72ch;
+
+  --radius-panel: 1.25rem;
+  --radius-badge: 5px;
+
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.25;
+  --text-label--letter-spacing: 0.16em;
+  --text-label--font-weight: 800;
+
+  --text-hero: clamp(4.5rem, 15vw, 18rem);
+  --text-hero--line-height: 0.8;
+
+  --text-page-title: clamp(2.75rem, 11vw, 10rem);
+  --text-page-title--line-height: 0.86;
+
+  --text-section-title: clamp(2.5rem, 7vw, 6rem);
+  --text-section-title--line-height: 0.9;
+
+  --text-stat: clamp(3.5rem, 12vw, 9rem);
+  --text-stat--line-height: 0.85;
+
+  --text-figure: clamp(3rem, 8vw, 5.5rem);
+  --text-figure--line-height: 0.85;
+
+  --text-numeral: clamp(2.75rem, 7vw, 4.5rem);
+  --text-numeral--line-height: 0.8;
+}

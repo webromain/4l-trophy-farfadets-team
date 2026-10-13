@@ -1,0 +1,26 @@
+/* Le halo vit dans un pseudo-élément : il apparaît en fondu au survol, sous le
+   contenu (`isolation`) et par-dessus l'aplat de la carte. */
+.card {
+  position: relative;
+  isolation: isolate;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-image: radial-gradient(
+    18rem circle at var(--x, 50%) var(--y, 50%),
+    rgb(255 122 54 / 0.4),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .card:hover::before {
+    opacity: 1;
+  }
+}

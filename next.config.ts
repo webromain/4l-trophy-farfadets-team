@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { SECURITY_HEADERS } from "./src/server/security/headers";
 
 /* `cacheComponents` et `partialPrefetching` sont retirés du scaffold : la CSP à
    nonce (proxy.ts) impose un rendu dynamique, avec lequel le prérendu partiel est
@@ -11,6 +12,10 @@ const nextConfig: NextConfig = {
   turbopack: {
     rules: {
       "*.css": {
+        /* Les modules CSS (`*.module.css`) ne passent pas par Tailwind : le
+           chargeur les renommerait en `.module.css.css` et Next les traiterait
+           comme des feuilles globales. */
+        condition: { not: { path: /\.module\.css$/ } },
         loaders: ["@tailwindcss/turbopack"],
         as: "*.css",
       },
@@ -20,23 +25,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/:chemin*",
-        headers: [
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "X-Frame-Options", value: "DENY" },
-          {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
-          },
-          {
-            key: "Permissions-Policy",
-            value:
-              "accelerometer=(), autoplay=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()",
-          },
-          {
-            key: "Strict-Transport-Security",
-            value: "max-age=63072000; includeSubDomains; preload",
-          },
-        ],
+        headers: SECURITY_HEADERS,
       },
     ];
   },

@@ -1,0 +1,106 @@
+/* SCROLL HORIZONTAL */
+
+/* `100cqw` : largeur de `.track-viewport`, pas de l'écran — la piste peut ainsi
+   vivre dans une colonne de grille. Le `min` empêche un rail plus court que la
+   fenêtre de partir vers la droite. */
+@keyframes track-slide {
+  to {
+    transform: translateX(min(0px, calc(-100% + 100cqw)));
+  }
+}
+@keyframes draw-route {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Hors mode piste, le tracé plein reste invisible : seul le pointillé s'affiche. */
+.track-route {
+  opacity: 0;
+}
+
+@media (min-width: 64rem) and (min-height: 40rem) {
+  /* Le cadre épinglé fait toute la hauteur de l'écran et centre son contenu, haut
+     de `--track-content` environ : les marges négatives rattrapent le vide
+     au-dessus et en dessous. */
+  .scroll-effects .track {
+    height: var(--track-length, 300vh);
+    margin-block: min(0px, calc((var(--track-content, 30rem) - 100vh) / 2));
+  }
+  .scroll-effects .track-frame {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    align-content: center;
+    align-items: center;
+  }
+  .scroll-effects .track-viewport {
+    overflow: hidden;
+    container-type: inline-size;
+  }
+  .scroll-effects .track-rail {
+    display: flex;
+    width: max-content;
+    max-width: none;
+    animation: track-slide 1s linear both paused;
+    animation-delay: calc(var(--track-progress, 0) * -1s);
+  }
+
+  /* La frise passe à l'horizontale : le point en haut, le pointillé vers l'étape
+     suivante. Largeurs proportionnelles à la fenêtre : le rail reste plus long
+     qu'elle sur grand écran. */
+  .scroll-effects .track-timeline > li {
+    flex: none;
+    width: max(20rem, 30cqw);
+    padding: 2.25rem 2rem 0 0;
+  }
+  .scroll-effects .track-timeline > li > div {
+    padding-bottom: 0;
+  }
+  .scroll-effects .track-dot {
+    top: 0;
+  }
+  .scroll-effects .track-line {
+    top: 6px;
+    right: 0.25rem;
+    bottom: auto;
+    left: 1.25rem;
+    border-left-width: 0;
+    border-top-width: 3px;
+  }
+  .scroll-effects .track-route {
+    opacity: 1;
+    animation: draw-route 1s linear both paused;
+    animation-delay: calc(var(--track-progress, 0) * -1s);
+  }
+
+  /* La liste numérotée devient une rangée de cartes bleu nuit : mêmes couleurs de
+     contexte que `.surface-dark`. */
+  .scroll-effects .track-cards {
+    gap: 1.5rem;
+    border-top-width: 0;
+  }
+  .scroll-effects .track-cards > li {
+    --color-ink: #ffffff;
+    --color-ink-soft: #d7d3dc;
+    --color-accent: #ffd251;
+    flex: none;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: max(21rem, 30cqw);
+    min-height: 20rem;
+    padding: 2rem;
+    border-bottom-width: 0;
+    border-radius: var(--radius-panel);
+    /* Verre fumé, comme `.glass-dark`, sans le reflet du soleil : ces cartes
+       glissent dans un cadre qui les rogne. */
+    background-color: rgb(24 24 43 / 0.66);
+    backdrop-filter: blur(16px) saturate(150%);
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.22),
+      inset 0 1px 0 rgb(255 255 255 / 0.3);
+  }
+}

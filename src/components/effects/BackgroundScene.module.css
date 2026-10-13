@@ -1,0 +1,125 @@
+/* FOND DU SITE
+
+   Le ciel de l'affiche, fixe derrière tout le contenu. `--page-progress` (0 en haut
+   de la page, 1 en bas) fait tomber la nuit : le halo du soleil s'enfonce, le
+   crépuscule recouvre le ciel, les étoiles sortent et la 4L traverse l'écran. */
+
+.sky {
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-poster-red) 0%,
+    var(--color-poster-red) 40%,
+    var(--color-vermilion) 62%,
+    var(--color-poster-orange) 100%
+  );
+}
+.sun {
+  background-image: radial-gradient(
+    closest-side,
+    var(--color-poster-yellow) 0%,
+    var(--color-peach) 38%,
+    transparent 100%
+  );
+}
+.dusk {
+  opacity: 0;
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-night) 0%,
+    var(--color-plum) 55%,
+    var(--color-crimson) 100%
+  );
+}
+.stars {
+  opacity: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 8% 12%, #fff, transparent),
+    radial-gradient(1px 1px at 17% 34%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 26% 8%, #fff, transparent),
+    radial-gradient(1px 1px at 34% 22%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 43% 41%, #fff, transparent),
+    radial-gradient(1px 1px at 52% 15%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 61% 30%, #fff, transparent),
+    radial-gradient(1px 1px at 69% 6%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 77% 24%, #fff, transparent),
+    radial-gradient(1px 1px at 85% 44%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 93% 17%, #fff, transparent),
+    radial-gradient(1px 1px at 12% 52%, #fff, transparent),
+    radial-gradient(1px 1px at 58% 55%, #fff, transparent),
+    radial-gradient(1px 1px at 38% 60%, #fff, transparent);
+}
+
+@keyframes sun-set {
+  to {
+    transform: translateY(32vh) scale(0.8);
+    opacity: 0.3;
+  }
+}
+@keyframes dusk {
+  0% {
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0.94;
+  }
+}
+@keyframes stars {
+  0%,
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.9;
+  }
+}
+@keyframes far-dune {
+  to {
+    transform: translateX(-18%);
+  }
+}
+@keyframes near-dune {
+  to {
+    transform: translateX(-30%);
+  }
+}
+/* `100%` vaut ici la largeur de la voiture : elle s'arrête au bord droit de l'écran. */
+@keyframes drive {
+  from {
+    transform: translateX(4vw);
+  }
+  to {
+    transform: translateX(calc(96vw - 100%));
+  }
+}
+
+.car {
+  transform: translateX(4vw);
+}
+
+:global(.scroll-effects) .sun {
+  animation: sun-set 1s linear both paused;
+  animation-delay: calc(var(--page-progress, 0) * -1s);
+}
+:global(.scroll-effects) .dusk {
+  animation: dusk 1s linear both paused;
+  animation-delay: calc(var(--page-progress, 0) * -1s);
+}
+:global(.scroll-effects) .stars {
+  animation: stars 1s linear both paused;
+  animation-delay: calc(var(--page-progress, 0) * -1s);
+}
+:global(.scroll-effects) .farDune {
+  animation: far-dune 1s linear both paused;
+  animation-delay: calc(var(--page-progress, 0) * -1s);
+}
+:global(.scroll-effects) .nearDune {
+  animation: near-dune 1s linear both paused;
+  animation-delay: calc(var(--page-progress, 0) * -1s);
+}
+:global(.scroll-effects) .car {
+  animation: drive 1s linear both paused;
+  animation-delay: calc(var(--page-progress, 0) * -1s);
+}

@@ -6,107 +6,186 @@ Il n'a qu'un but : **convaincre un dirigeant de TPE ou PME de devenir sponsor en
 
 ## Démarrer
 
-Node 20.9 ou plus récent.
+Node 22.12 ou plus récent (exigé par l'outil de test).
 
 ```bash
-npm install
-npm run dev     # développement, http://localhost:3000
-npm run build   # build de production
-npm start       # sert le build
-npm run lint
-npx tsc --noEmit
+npm install          # réseau lent : ajouter --maxsockets=3 --fetch-retries=5 --fetch-timeout=600000
+npm run dev          # développement, http://localhost:3000
+npm run build        # build de production
+npm start            # sert le build
+
+npm run check        # types + lint + tests : à lancer avant de pousser
+npm test             # tests seuls (npm run test:watch pour les relancer à chaque modification)
+npm run format       # formate le code, vérifie, et annule tout si la vérification échoue
 ```
+
+### Formatage automatique
+
+Le code est formaté par **Prettier**, de trois façons :
+
+- **à l'enregistrement** dans VS Code, avec l'extension recommandée par `.vscode/extensions.json` ;
+- **à chaque commit**, par un hook (`.husky/pre-commit`) : les fichiers indexés sont formatés, puis types, lint et tests sont relancés. Si une étape échoue, les fichiers reprennent leur état d'origine et le commit est annulé ;
+- **à la demande**, par `npm run format`, qui suit le même principe sur tout le projet (`scripts/format.mjs`) : vérification avant, contrôle de Prettier que le sens du code est préservé, formatage, vérification après, et retour arrière automatique au moindre échec.
+
+Un formateur ne change que la mise en page du code ; ces vérifications sont là pour le prouver à chaque fois.
+
+### Tests
+
+Les tests (Vitest, fichiers `*.test.ts` à côté du code testé) ne visent pas la couverture mais les erreurs qui coûtent cher :
+
+| Fichier | Ce qu'il attrape |
+| --- | --- |
+| `src/content/content.test.ts` | un total de budget faux, une formule mal classée, un PDF déplacé, un sponsor mal saisi |
+| `src/components/layout/navigation.test.ts` | un lien du menu ou du code vers une page qui n'existe pas, un sitemap incomplet |
+| `src/server/security/csp.test.ts` | une CSP assouplie par erreur, un en-tête de sécurité retiré |
+| `src/lib/format.test.ts` | une espace insécable perdue dans les montants |
+| `src/lib/scroll-progress.test.ts` | un calcul d'effet au scroll faux (division par zéro, bornes) |
+| `src/features/budget/slices.test.ts` | un graphique de budget qui ne fait plus le total |
+| `src/architecture.test.ts` | un import qui casse le rangement décrit plus bas |
 
 ## Avant de toucher au code
 
 Le projet tourne sur **Next.js 16.4**, dont plusieurs conventions ont changé — notamment `middleware.ts`, devenu `proxy.ts`. La documentation de la version exacte est embarquée dans `node_modules/next/dist/docs/`. C'est elle qui fait foi, pas la mémoire qu'on peut avoir des versions précédentes. Voir aussi `AGENTS.md`.
 
-Pas de dossier `src/` : l'App Router est à la racine, dans `app/`.
-
 ## Où se trouve quoi
 
+Tout le code est dans `src/`, rangé par rôle. La racine ne contient que la configuration. **Les noms du code sont en anglais** (fichiers, composants, variables, classes CSS) ; les commentaires, cette documentation et le contenu du site sont en français, et les adresses des pages aussi (`/equipage`, `/parcours`…), puisque ce sont elles que voient les visiteurs.
+
 ```
-app/
-├── layout.tsx            polices, en-tête, pied de page, lien d'évitement
-├── page.tsx              accueil : le parcours de lecture complet et condensé
-├── globals.css           tokens @theme (Tailwind v4, pas de tailwind.config.js)
-├── equipage/ parcours/ sponsors/ nous-aider/ contact/
-├── mentions-legales/ confidentialite/
-├── sitemap.ts  robots.ts  opengraph-image.tsx  icon.tsx
-└── components/           le vocabulaire visuel du book
-content/
-├── projet.ts             source de vérité du contenu factuel
-└── sponsors.ts           liste des sponsors, vide au départ
-proxy.ts                  CSP à nonce
-next.config.ts            autres en-têtes de sécurité
-public/                   le dossier de sponsoring en PDF
+src/
+├── app/                  LES ROUTES : une page = ses métadonnées + la liste de ses sections
+│   ├── layout.tsx        en-tête, pied de page, fond, lien d'évitement
+│   ├── page.tsx          accueil
+│   ├── equipage/ parcours/ sponsors/ nous-aider/ contact/
+│   ├── mentions-legales/ confidentialite/
+│   └── sitemap.ts  robots.ts  opengraph-image.tsx  icon.tsx
+├── features/             LE SITE PAR SUJET : les sections et les composants propres à un sujet
+│   ├── home/             bannière d'ouverture
+│   ├── event/            le 4L Trophy en bref, la mission solidaire
+│   └── crew/  route/  sponsors/  budget/  support/  contact/
+├── components/           LES BRIQUES PARTAGÉES, sans lien avec un sujet
+│   ├── ui/               boutons, titres, cartes, listes, blocs de chiffres
+│   ├── layout/           en-tête, pied de page, liste des pages
+│   └── effects/          fond animé et pilote des effets au scroll
+├── content/              LES DONNÉES : un fichier par sujet, source de vérité du contenu
+├── lib/                  fonctions pures (mise en forme des nombres, calculs des effets)
+├── styles/               LES STYLES GLOBAUX : thème, verre, effets au scroll, base
+├── server/               LE CÔTÉ SERVEUR : la sécurité (CSP, en-têtes)
+└── proxy.ts              point d'entrée serveur de chaque requête
+scripts/                  outils du projet (formatage sûr)
+public/                   fichiers servis tels quels : pdfs/, imgs/, sponsors/
 ```
 
-### `content/` est la source de vérité
+L'alias `@/` pointe sur `src/` : `@/components/ui/Button`, `@/content/budget`…
 
-**Aucun montant, aucune date, aucun chiffre ne doit être écrit en dur dans le JSX.** Tout vient de `content/projet.ts`, qui reprend la fiche projet telle quelle. Si un montant change, il ne change qu'à un endroit et le site reste cohérent avec le book.
+### Les règles de rangement
 
-Les nombres sont mis en forme par `nombre()`, `euros()` et `kilometres()`, exportés du même fichier. Ils produisent la typographie française attendue — `6 000 km`, `1 000 €` — avec des espaces insécables. N'écrivez jamais un espace insécable à la main dans une chaîne : c'est un caractère invisible dans le code.
+- **Une page ne contient pas de mise en page.** `src/app/**/page.tsx` déclare ses métadonnées et enchaîne des sections ; le JSX est dans `features/`. Seules les deux pages légales, qui ne sont que du texte, gardent leur contenu sur place.
+- **Une fonctionnalité regroupe tout ce qui parle d'un sujet.** On y trouve trois sortes de fichiers : `*Section` (un bloc complet de page), `*Preview` (la version condensée affichée à l'accueil, avec un lien vers la page), et les composants propres au sujet (`RouteMap`, `TierCard`, `BudgetChart`…).
+- **Une brique de `components/` ne connaît aucun sujet.** Si un composant importe `content/`, sa place est dans une fonctionnalité — à l'exception du pied de page, qui rappelle les chiffres du raid.
+- **Les imports ne vont que dans un sens** : `app` → `features` → `components` → `content` et `lib`. Jamais de `../` : on passe par `@/`.
+- **Un style va au plus près de ce qu'il habille.** Dans l'ordre : des classes Tailwind dans le composant ; un module CSS à côté du composant (`Header.module.css`) quand il faut du CSS que Tailwind n'exprime pas et qu'un seul composant s'en sert ; `src/styles/` seulement pour ce qui est partagé par tout le site (thème, verre, effets au scroll).
+
+Ces règles sont vérifiées par `src/architecture.test.ts`.
+
+Pour modifier le site :
+
+| Je veux… | J'ouvre… |
+| --- | --- |
+| changer un chiffre, une date, un texte factuel | `src/content/` |
+| changer l'ordre des blocs d'une page | `src/app/<page>/page.tsx` |
+| changer la mise en page d'un bloc | `src/features/<sujet>/` |
+| changer l'allure d'un bouton, d'un titre, d'une carte partout | `src/components/ui/` |
+| changer une couleur, une police, une taille de titre | `src/styles/theme.css` |
+| changer l'aspect du verre ou le reflet du soleil | `src/styles/glass.css` |
+| changer un effet au scroll | `src/styles/scroll-effects.css`, `track.css` et `src/lib/scroll-progress.ts` |
+| changer le fond animé | `src/components/effects/BackgroundScene.tsx` et son module CSS |
+| ajouter une page | un dossier dans `src/app/`, ses sections dans une fonctionnalité, une ligne dans `src/components/layout/navigation.ts` |
+
+### Frontend et backend
+
+Le site n'a **pas de backend au sens habituel** : ni base de données, ni API, ni formulaire. Presque tout est rendu côté serveur à partir des fichiers de `content/`, et trois composants seulement s'exécutent dans le navigateur (`Header`, `ScrollEffects`, `ReactiveCard`, marqués `"use client"`).
+
+Ce qui tient lieu de côté serveur est regroupé pour rester lisible :
+
+- `src/proxy.ts` et `src/server/security/` : la CSP et les en-têtes de sécurité ;
+- `src/app/robots.ts`, `sitemap.ts`, `opengraph-image.tsx`, `icon.tsx` : les fichiers que Next génère pour les moteurs de recherche et les réseaux sociaux ;
+- `src/content/` : les données.
+
+Le jour où le site aura besoin d'un vrai traitement serveur (formulaire de contact, envoi de courriel), sa logique ira dans `src/server/` et sa route dans `src/app/api/`.
+
+### `src/content/` est la source de vérité
+
+**Aucun montant, aucune date, aucun chiffre ne doit être écrit en dur dans le JSX.** Tout vient des fichiers de `src/content/` (`event.ts`, `route.ts`, `crew.ts`, `budget.ts`, `sponsorship.ts`, `contact.ts`, `site.ts`), qui reprennent la fiche projet telle quelle. Si un montant change, il ne change qu'à un endroit et le site reste cohérent avec le book.
+
+Les nombres sont mis en forme par `formatNumber()`, `formatEuros()` et `formatKilometres()`, dans `src/lib/format.ts`. Ils produisent la typographie française attendue — `6 000 km`, `1 000 €` — avec des espaces insécables. N'écrivez jamais un espace insécable à la main dans une chaîne : c'est un caractère invisible dans le code.
 
 ### Ajouter un sponsor
 
-Dans `content/sponsors.ts` :
+Dans `src/content/sponsors.ts` :
 
 ```ts
 export const SPONSORS: readonly Sponsor[] = [
   {
-    nom: "Nom de l'entreprise",
-    formule: "B",
+    name: "Nom de l'entreprise",
+    tier: "B",
     logo: "/sponsors/nom-entreprise.svg",
-    largeurLogo: 240,
-    hauteurLogo: 80,
-    site: "https://exemple.fr",
+    logoWidth: 240,
+    logoHeight: 80,
+    website: "https://exemple.fr",
   },
 ];
 ```
 
 Deux garde-fous volontaires :
 
-- le type de `site` est `` `https://${string}` `` : un `http://` ne compile pas, et `estLienSur()` revérifie au rendu ;
-- le type de `logo` impose `/sponsors/…`, donc un fichier hébergé chez nous. **Jamais de lien direct vers le serveur d'un tiers** : disponibilité, vie privée des visiteurs, risque de substitution d'image.
+- le type de `website` est `` `https://${string}` `` : un `http://` ne compile pas, et `npm test` revérifie l'adresse ;
+- le type de `logo` impose `/sponsors/…`, donc un fichier hébergé chez nous, et `npm test` vérifie que le fichier existe dans `public/sponsors/`. **Jamais de lien direct vers le serveur d'un tiers** : disponibilité, vie privée des visiteurs, risque de substitution d'image.
 
 Un sponsor en formule D apparaît automatiquement en page d'accueil : c'est une contrepartie vendue.
 
 ## Direction artistique
 
-Deux valeurs viennent de la charte, les autres sont **relevées au pixel sur le PDF du book** et restent à confirmer par le Design System.
+La charte est celle de **l'affiche officielle du 4L Trophy 2027** (`public/imgs/affiche-2027.jpeg`) : un ciel de coucher de soleil rouge, orange et jaune, du texte blanc, une 4L en silhouette. Les teintes de l'affiche sont relevées au pixel sur l'image ; le bleu nuit et le rouge carmin sont les couleurs propres à l'équipage.
 
 | Token | Hex | Usage |
 | --- | --- | --- |
-| `bleu-nuit` | `#18182b` | texte courant, aplats sombres |
-| `rouge-4l` | `#b2112c` | chiffres clés, appels à l'action, surtitres |
-| `papier` | `#fbf7ee` | fond de page |
-| `sable` | `#f1e3c9` | cartes, encadrés |
-| `sable-fonce` | `#d8c198` | filets, pointillés, pays de la carte |
-| `terracotta` | `#b1502d` | filets sous les titres, grands numéraux, anneau de focus |
-| `ocre` | `#e3a63b` | chiffres et titres **sur fond bleu nuit uniquement** |
-| `bleu-schema` | `#335f9e` | schémas uniquement |
-| `gris-texte` | `#535065` | légendes, texte secondaire |
+| `poster-red` | `#ff153a` | ciel du site (haut du dégradé), badge de formule |
+| `vermilion` | `#ff3d37` | ciel du site (milieu du dégradé) |
+| `poster-orange` | `#ff7a36` | ciel du site (bas du dégradé), schémas |
+| `poster-yellow` | `#ffd251` | halo du soleil, phare de la 4L, accent **sur bleu nuit uniquement** |
+| `peach` | `#feb87c` | halo du soleil, graphique du budget |
+| `night` | `#18182b` | silhouettes, verre fumé, boutons |
+| `crimson` | `#b2112c` | dune lointaine, crépuscule |
+| `plum` | `#3a1236` | crépuscule, dune proche |
+| `paper` | `#fbf7ee` | texte clair sur badges, schémas |
 
-Trois polices, chargées par `next/font/google` donc auto-hébergées : **Barlow Condensed** (titres et chiffres, 700/800), **Barlow** (texte courant, 400/500/600), **Playfair Display italique** (citations, avec parcimonie).
+Cinq couleurs **de contexte** (`ink`, `ink-soft`, `accent`, `line`, `ink-inverse`) changent de valeur selon le support : blanc sur le ciel du site et sur le verre, blanc et jaune dans `.surface-dark`. Les composants les utilisent au lieu de couleurs fixes, ce qui leur permet de vivre sur n'importe quel fond.
 
-Règles non négociables :
+Trois polices, chargées par `next/font/google` donc auto-hébergées (`src/styles/fonts.ts`), choisies pour leur ressemblance avec celles de l'affiche :
 
-- **un seul élément rouge dominant par écran** — le rouge signale, il ne décore pas ;
-- **l'ocre ne se pose jamais sur fond clair** : 2,01:1 sur papier, 1,69:1 sur sable, soit très en dessous du seuil ;
-- **aucune ombre, aucun dégradé** : les blocs se distinguent par leur aplat ;
-- **jamais de texte posé directement sur une photo** : toujours un aplat ou un voile derrière ;
-- pas de dark mode. La charte dérive d'une identité print et n'a pas de variante sombre.
+- **Jaro** (`font-display`) : très grands titres et chiffres, à la manière du « 4L TROPHY » ;
+- **Kaushan Script** (`font-script`, classe `.eyebrow`) : accroches au pinceau, inclinées, à la manière du « Desert Aventure ! » ;
+- **Montserrat** (`font-heading` et texte courant) : capitales grasses et texte.
+
+**Le verre** (`.glass`, `src/styles/glass.css`) habille tous les encadrés : le ciel, flouté, se voit à travers ; un liseré clair en dessine le bord ; le soleil s'y reflète, du côté où il se trouve, et le reflet s'éteint à mesure que la nuit tombe. `.glass-dark` donne un verre fumé pour les blocs qui doivent trancher (grand chiffre, formule principale).
+
+Règles :
+
+- **le texte posé sur le ciel ou sur le verre est blanc**, jamais jaune ni sombre : le fond va du rouge à l'orange et seul le blanc y reste lisible partout ;
+- **le jaune ne sert d'accent que sur verre fumé** (`.surface-dark`) ;
+- **la typographie fait le décor** : titres géants, accroches de travers, bandes de mots au contour (`Marquee`). Pas de filets ni d'ornements ajoutés ;
+- pas de dark mode ;
 - passez par les tokens `@theme`, pas par des valeurs arbitraires type `text-[#b2112c]`. Si une valeur arbitraire semble nécessaire, c'est qu'il manque un token.
 
-Les composants de `app/components/` reproduisent le vocabulaire du book : en-tête de section à filet terracotta, bloc statistique bleu nuit à chiffre ocre, cartes sable à chiffre rouge, liste à grands numéraux, timeline « la piste » (ligne pointillée rouge reliant des points pleins — c'est la signature visuelle du projet, ne la remplacez pas par une bordure pleine), citation, carte de formule, emplacement photo, bloc `[À COMPLÉTER]`.
+Le fond du site (`BackgroundScene`) est une scène fixe qui suit le défilement de la page : le soleil se couche, la nuit tombe, les dunes glissent et une 4L en silhouette traverse l'écran de gauche à droite. Les effets au scroll (apparitions, parallaxe, sections à défilement horizontal, reflets) sont pilotés par `ScrollEffects` à partir des calculs de `src/lib/scroll-progress.ts` ; ils sont coupés quand le système demande des animations réduites.
 
 ## Sécurité
 
 Le site est statique dans l'esprit, mais il porte l'image de l'équipage auprès d'entreprises.
 
-- **CSP stricte à nonce**, générée par requête dans `proxy.ts`, sans `script-src 'unsafe-inline'`, avec `frame-ancestors 'none'`.
-- `next.config.ts` ajoute `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` et HSTS, et retire `X-Powered-By`.
+- **CSP stricte à nonce**, générée par requête dans `src/proxy.ts` (règles dans `src/server/security/csp.ts`), sans `script-src 'unsafe-inline'`, avec `frame-ancestors 'none'`.
+- `next.config.ts` ajoute, depuis `src/server/security/headers.ts`, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` et HSTS, et retire `X-Powered-By`.
 - **Aucun traceur, aucun cookie, aucun script tiers.** Zéro requête vers un domaine tiers au chargement — c'est ce qui rend la page confidentialité honnête et simple.
 - Aucun `dangerouslySetInnerHTML`, aucun secret dans le code.
 - Pas de formulaire de contact : pas de backend, donc pas de surface d'attaque, pas de spam, pas de données personnelles hébergées.
@@ -115,17 +194,17 @@ Le site est statique dans l'esprit, mais il porte l'image de l'équipage auprès
 
 La CSP à nonce **impose le rendu dynamique** : Next.js ne peut pas injecter de nonce dans un shell prérendu. C'est pourquoi `cacheComponents` et `partialPrefetching` ont été retirés de la configuration du scaffold, et pourquoi le layout racine appelle `connection()`. Les pages sont donc servies à la demande et ne sont pas mises en cache par un CDN.
 
-Le seul moyen de revenir au statique serait d'autoriser `'unsafe-inline'` sur `script-src`. Si ce compromis est un jour rediscuté, il se change à trois endroits : `proxy.ts`, `next.config.ts` et le `connection()` du layout.
+Le seul moyen de revenir au statique serait d'autoriser `'unsafe-inline'` sur `script-src`. Si ce compromis est un jour rediscuté, il se change à trois endroits : `src/server/security/csp.ts`, `next.config.ts` et le `connection()` du layout.
 
 ## Accessibilité
 
 Cible : **WCAG 2.2 niveau AA**. Le site s'adresse à des dirigeants de tout âge, souvent sur mobile.
 
-État vérifié : Lighthouse 100 en accessibilité, bonnes pratiques et SEO sur les 8 pages ; axe-core sans violation à 1280 px comme à 320 px ; aucun défilement horizontal à 320 px ni à 200 % de zoom ; parcours complet au clavier avec focus toujours visible.
+**Audit à refaire.** Le dernier audit complet (Lighthouse 100 en accessibilité, axe-core sans violation, navigation au clavier) date d'avant la refonte aux couleurs de l'affiche. Point connu : le texte blanc posé directement sur le rouge de l'affiche atteint 3,9:1, suffisant pour les grands titres (3:1) mais sous le seuil AA du texte courant (4,5:1) ; il remonte sur le verre et à mesure que la nuit tombe.
 
 À respecter en modifiant le site :
 
-- un seul `<h1>` par page, hiérarchie de titres sans saut de niveau (`NumberedList` accepte `niveau` pour cette raison) ;
+- un seul `<h1>` par page, hiérarchie de titres sans saut de niveau (`NumberedList` accepte `headingLevel` pour cette raison) ;
 - aucune information portée par la seule couleur : les zones A/B/C/D de la 4L portent leur lettre et une légende texte les reprend ;
 - SVG porteurs de sens en `role="img"` avec `<title>` ; SVG décoratifs en `aria-hidden="true"` ;
 - le tableau des postes est l'équivalent textuel du graphique budget, qui est masqué aux technologies d'assistance ;
@@ -133,14 +212,14 @@ Cible : **WCAG 2.2 niveau AA**. Le site s'adresse à des dirigeants de tout âge
 - libellés de liens explicites hors contexte, format et nouvel onglet signalés ;
 - `prefers-reduced-motion` respecté.
 
-Le menu mobile est le **seul composant client** du site. Il s'appuie sur `<dialog>` en mode modal, ce qui donne le piégeage du focus et la fermeture par `Échap` nativement.
+Le menu mobile s'appuie sur `<dialog>` en mode modal, ce qui donne le piégeage du focus et la fermeture par `Échap` nativement.
 
 ## Avant la mise en ligne
 
 1. Renseigner les **12 blocs `[À COMPLÉTER]`** : nom de l'association, cadre fiscal, téléphones et e-mails de Romain et Bastien, adresse du site, compte Instagram, identification de l'éditeur, directeur de la publication, hébergeur, durée de conservation des journaux.
 2. Fournir les **6 photos** : équipage (accueil et contact), portraits de Romain et de Bastien, la 4L, les fournitures collectées.
 3. Définir `NEXT_PUBLIC_SITE_URL` sur l'adresse réelle. Elle alimente les URL canoniques, le sitemap et les images Open Graph.
-4. Remplacer l'icône d'onglet (`app/icon.tsx`), aujourd'hui une simple initiale faute de logo.
+4. Remplacer l'icône d'onglet (`src/app/icon.tsx`), aujourd'hui une simple initiale faute de logo.
 5. Faire confirmer les couleurs relevées par le Design System.
 
 `npm audit` remonte des vulnérabilités dans la chaîne ESLint uniquement. `npm audit --omit=dev` ne remonte rien : rien n'atteint le navigateur ni le serveur en production.
@@ -151,5 +230,5 @@ Le menu mobile est le **seul composant client** du site. Il s'appuie sur `<dialo
 - N'inventer **aucun** sponsor, témoignage, retombée média ou statistique.
 - Toute information manquante s'écrit `[À COMPLÉTER]`, **visiblement**, jamais devinée ni masquée.
 - **Ne mentionner aucun pourcentage de déduction fiscale** tant que le cadre fiscal n'est pas validé par l'association.
-- Ne pas utiliser le logo officiel du 4L Trophy. L'équipage n'a pas de logo : écrire « LES FARFADETS » en Barlow Condensed extra-gras.
+- Ne pas utiliser le logo officiel du 4L Trophy. L'équipage n'a pas de logo : écrire « LES FARFADETS » en Jaro (`font-display`) ou au pinceau en Kaushan Script (`font-script`).
 - Ton : vouvoiement, « nous » pour l'équipage et « vous » pour le sponsor. Phrases courtes, une idée par phrase. Enthousiaste mais professionnel, sans superlatifs ni emoji.

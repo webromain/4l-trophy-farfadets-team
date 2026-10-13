@@ -1,0 +1,9 @@
+/* Dans un bloc bleu nuit, l'accent passe au jaune des phares. */
+.surface-dark {
+  --color-ink: #ffffff;
+  --color-ink-soft: #d7d3dc;
+  --color-accent: #ffd251;
+  --color-line: rgb(255 255 255 / 0.2);
+  --color-ink-inverse: #18182b;
+  color: var(--color-ink);
+}

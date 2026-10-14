@@ -5,6 +5,9 @@ import { SECURITY_HEADERS } from "./src/server/security/headers";
    nonce (proxy.ts) impose un rendu dynamique, avec lequel le prérendu partiel est
    incompatible — le shell statique n'aurait pas accès au nonce. */
 const nextConfig: NextConfig = {
+  /* Image Docker : `.next/standalone` contient le serveur et les seuls modules
+     dont il a besoin (Dockerfile). */
+  output: "standalone",
   experimental: {
     agentFeedback: true,
   },

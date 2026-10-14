@@ -45,11 +45,13 @@ export const CREW_PORTRAITS = CREW.map((member) => ({
   label: member.photoLabel,
 }));
 
+/* L'éditeur et directeur de la publication du site, qui le publie à titre
+   personnel : l'association porte le projet, pas le site. */
+export const PUBLISHER = `${CREW[0].firstName} ${CREW[0].name}`;
+
 export const ASSOCIATION = {
   /* Son nom officiel, suivi de celui sous lequel elle porte le projet. */
   name: "EFREI Motorsport (4L & Faons)",
-  /* Son président : directeur de la publication du site, qu'elle édite. */
-  president: "Matéo",
   /* Son siège : c'est l'adresse de l'école. */
   address: "30-32 avenue de la République, 94800 Villejuif",
   grant: 1000,

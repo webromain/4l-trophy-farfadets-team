@@ -1,0 +1,13 @@
+# Rien de ce qui suit n'entre dans l'image : dépendances et builds sont refaits
+# dans le Dockerfile, le reste ne sert qu'au développement.
+.git
+.husky
+.next
+.vscode
+node_modules
+coverage
+docs
+*.md
+.env*
+Dockerfile
+compose.yaml

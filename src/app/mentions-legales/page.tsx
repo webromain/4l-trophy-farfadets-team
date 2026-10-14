@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Section from "@/components/ui/Section";
 import SectionTitle from "@/components/ui/SectionTitle";
-import { ASSOCIATION } from "@/content/crew";
+import { ASSOCIATION, PUBLISHER } from "@/content/crew";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
@@ -27,21 +27,22 @@ export default function LegalNoticePage() {
       <div className="enter glass rounded-panel p-6 [--enter-step:2] sm:p-10 [&>h2:first-child]:mt-0">
         <h2 className={HEADING_CLASS}>Éditeur du site</h2>
         <p className={TEXT_CLASS}>
-          {`Le site est édité par l'association ${ASSOCIATION.name}, qui porte le projet « Les Farfadets — 4L Trophy 2027 ». Son siège est au ${ASSOCIATION.address}.`}
+          {`Le site est édité à titre personnel et non professionnel par ${PUBLISHER}, membre de l'équipage, pour soutenir le projet « Les Farfadets — 4L Trophy 2027 », porté par l'association ${ASSOCIATION.name}. L'association n'est pas l'éditrice du site.`}
         </p>
         <p className={TEXT_CLASS}>
-          Pour la joindre, les coordonnées de l&apos;équipage figurent sur la
-          page{" "}
+          Comme le permet la loi pour la confiance dans l&apos;économie
+          numérique aux éditeurs non professionnels, son adresse personnelle
+          n&apos;est pas publiée : ses éléments d&apos;identification ont été
+          communiqués à l&apos;hébergeur. Pour le joindre, ses coordonnées
+          figurent sur la page{" "}
           <Link href="/contact" className={LINK_CLASS}>
             Contact
           </Link>
-          . Le site est réalisé par Romain Poisson, membre de l&apos;équipage.
+          .
         </p>
 
         <h2 className={HEADING_CLASS}>Directeur de la publication</h2>
-        <p className={TEXT_CLASS}>
-          {`${ASSOCIATION.president}, président de l'association.`}
-        </p>
+        <p className={TEXT_CLASS}>{`${PUBLISHER}, éditeur du site.`}</p>
 
         <h2 className={HEADING_CLASS}>Hébergeur</h2>
         <p className={TEXT_CLASS}>

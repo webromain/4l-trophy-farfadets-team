@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { formatAccessLog } from "@/server/access-log";
+import { writeAccessLog } from "@/server/access-log";
 import { buildCsp } from "@/server/security/csp";
 
 /* Point d'entrée serveur de chaque requête : il pose la CSP à nonce
@@ -7,7 +7,7 @@ import { buildCsp } from "@/server/security/csp";
    d'accès (server/access-log.ts). */
 export function proxy(request: NextRequest) {
   if (process.env.NODE_ENV === "production") {
-    console.log(formatAccessLog(request));
+    void writeAccessLog(request);
   }
 
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");

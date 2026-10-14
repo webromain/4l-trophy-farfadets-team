@@ -23,6 +23,9 @@ export default function CrewPreview() {
               </p>
               <h3 className="mt-1 font-display text-4xl uppercase text-ink sm:text-5xl">
                 {`${member.firstName} ${member.name}`}
+                <span className="ml-3 font-heading text-label text-ink-soft">
+                  {`${member.age} ans`}
+                </span>
               </h3>
               <p className="mt-1 max-w-text leading-relaxed text-ink-soft">
                 {member.bio[0]}

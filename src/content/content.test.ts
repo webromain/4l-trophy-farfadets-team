@@ -118,6 +118,9 @@ describe("raid et équipage", () => {
       expect(member.role, member.firstName).not.toBe("");
       expect(member.bio.length, member.firstName).toBeGreaterThan(0);
       expect(member.photo, member.firstName).toMatch(/^[a-z0-9-]+$/);
+      /* Le 4L Trophy est réservé aux étudiants de 18 à 28 ans. */
+      expect(member.age, member.firstName).toBeGreaterThanOrEqual(18);
+      expect(member.age, member.firstName).toBeLessThanOrEqual(28);
     }
     expect(CONTACTS.map((contact) => contact.firstName)).toEqual(
       CREW.map((member) => member.firstName),

@@ -23,6 +23,9 @@ export default function CrewMemberCard({ member }: { member: CrewMember }) {
         </h2>
         <p className="mt-1 font-display text-5xl uppercase text-ink sm:text-6xl">
           {`${member.firstName} ${member.name}`}
+          <span className="ml-3 font-heading text-label text-ink-soft">
+            {`${member.age} ans`}
+          </span>
         </p>
         {member.bio.map((line) => (
           <p

@@ -1,0 +1,14 @@
+# Fins de ligne : toujours LF, dans le dépôt comme sur le disque, quels que soient
+# la machine et le réglage `core.autocrlf` de chacun. Prettier écrit du LF lui
+# aussi : sans cette règle, Git signale des fichiers « modifiés » qui ne le sont pas.
+* text=auto eol=lf
+
+# Fichiers binaires : jamais convertis.
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.pdf binary
+*.woff2 binary

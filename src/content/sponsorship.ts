@@ -150,6 +150,6 @@ export const DONATION_TAX_RULES: readonly TitledItem[] = [
 
 export const SPONSORSHIP_DECK = {
   href: "/pdfs/dossier-sponsoring-les-farfadets-4l-trophy-2027.pdf",
-  fileSize: "8,8 Mo",
+  fileSize: "3,2 Mo",
   pages: 12,
 } as const;

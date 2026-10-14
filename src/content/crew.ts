@@ -4,6 +4,8 @@ export type CrewMember = {
   readonly firstName: string;
   readonly name: string;
   readonly role: string;
+  /* Son âge au départ du raid, pour ne pas avoir à le changer d'ici là. */
+  readonly age: number;
   readonly bio: readonly string[];
   /* Nom du fichier de son portrait dans `public/photos/`, sans extension. */
   readonly photo: string;
@@ -15,6 +17,7 @@ export const CREW: readonly CrewMember[] = [
     firstName: "Romain",
     name: "Poisson",
     role: "Site web, communication, gestion du projet",
+    age: 21,
     bio: [
       "Étudiant à l'Efrei, en Mastère M1 Manager Développeur Full Stack.",
       "Titulaire d'un Bachelor Développeur en intelligence artificielle et data science.",
@@ -27,6 +30,7 @@ export const CREW: readonly CrewMember[] = [
     firstName: "Catalin",
     name: "Stefanescu",
     role: "Mécanique et préparation de la 4L",
+    age: 23,
     bio: [
       "Étudiant en 3e année de BUT Génie industriel et maintenance à l'IUT de Mantes-en-Yvelines.",
       "En parallèle, élève de 1re année à l'ISTY, école d'ingénieurs, en Systèmes numériques pour l'industrie.",

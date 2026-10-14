@@ -5,6 +5,7 @@
 .next
 .vscode
 node_modules
+logs
 coverage
 docs
 *.md

@@ -1,5 +1,6 @@
 # Le site dans un conteneur, servi sur http://localhost:3000 (README, « Démarrer »).
-# Le même fichier sert sur un poste (Linux, macOS, Windows) et sur le serveur.
+# Le même fichier sert sur un poste (Linux, macOS, Windows) et sur le serveur, sans
+# aucun réglage à faire sur la machine.
 
 services:
   site:
@@ -13,9 +14,10 @@ services:
       - "127.0.0.1:3000:3000"
     # Garde de la mémoire pour le reste du serveur (4 Go en tout).
     mem_limit: 512m
-    # Sur le serveur, LOG_DRIVER=journald (dans le .env voisin) envoie le journal
-    # d'accès à journald, réglé pour tout supprimer au bout de six mois : la durée
-    # promise par la page Confidentialité. Ailleurs, le pilote `local` de Docker,
-    # le seul disponible partout (Docker Desktop n'a pas journald).
-    logging:
-      driver: ${LOG_DRIVER:-local}
+    # Journal d'accès : un fichier par jour, ceux de plus de six mois supprimés
+    # par le site lui-même (src/server/access-log.ts).
+    volumes:
+      - access-logs:/app/logs
+
+volumes:
+  access-logs:

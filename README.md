@@ -8,7 +8,7 @@ Il n'a qu'un but : **convaincre un dirigeant de TPE ou PME de devenir sponsor en
 
 ### Avec Docker (recommandé)
 
-Seul Docker est nécessaire : pas de Node à installer. Le site est construit et servi comme en production, sur http://localhost:3000.
+Seul Docker est nécessaire : pas de Node à installer. Le site est construit et servi exactement comme en production, sur http://localhost:3000. C'est la façon de le déployer : le journal d'accès est conservé dans un volume, le conteneur redémarre seul et n'écoute que sur la machine.
 
 ```bash
 docker compose up -d --build   # construit l'image et lance le site
@@ -26,7 +26,7 @@ Node 22.12 ou plus récent (exigé par l'outil de test).
 npm install          # réseau lent : ajouter --maxsockets=3 --fetch-retries=5 --fetch-timeout=600000
 npm run dev          # développement, http://localhost:3000
 npm run build        # build de production
-npm start            # sert le build
+npm start            # sert le build (journal d'accès dans logs/, ignoré par git)
 
 npm run check        # types + lint + tests : à lancer avant de pousser
 npm test             # tests seuls (npm run test:watch pour les relancer à chaque modification)
@@ -253,13 +253,13 @@ Le menu mobile s'appuie sur `<dialog>` en mode modal, ce qui donne le piégeage 
 
 ## Avant la mise en ligne
 
-1. Le site est édité par Romain à titre personnel (`PUBLISHER` dans `src/content/crew.ts`), pas par l'association : il en est le directeur de la publication et répond de ce qui y est publié. Ses éléments d'identification doivent être à jour chez l'hébergeur (compte OVH), puisque les mentions légales ne publient pas son adresse. Il n'y a plus de bloc `[À COMPLÉTER]` sur le site.
+1. Le site est édité par Romain à titre personnel (`PUBLISHER` dans `src/content/crew.ts`), pas par l'association : il en est le directeur de la publication. Son adresse n'est pas publiée, ses éléments d'identification sont chez l'hébergeur.
 2. Déposer les **photos** dans `public/photos/` (voir « Ajouter une photo ») : équipage (accueil et contact), portraits de Romain et de Catalin. Deux photos viendront plus tard et sont remplacées d'ici là par un dessin (`Illustration`) : la 4L, achetée grâce aux premiers sponsors (page Parcours, `OrienteeringSection`), et les fournitures, réunies pendant la préparation (page Nous aider, `SuppliesSection`).
 3. L'adresse du site est `https://4l.lesfarfadets.net` (`PUBLIC_SITE_URL` dans `src/content/site.ts`) : elle alimente les URL canoniques, le sitemap, les images Open Graph et la page Contact. `NEXT_PUBLIC_SITE_URL` ne sert qu'à la remplacer pour un déploiement à une autre adresse.
 4. Remplacer l'icône d'onglet (`src/app/icon.tsx`), aujourd'hui une simple initiale faute de logo.
 5. Faire confirmer les couleurs relevées par le Design System.
-6. Héberger le site comme les pages légales l'annoncent : sur un VPS OVH situé au Royaume-Uni, derrière un tunnel Cloudflare, avec des journaux d'accès supprimés après **six mois**. Le journal d'accès (`src/server/access-log.ts`) part dans journald quand le `.env` à côté de `compose.yaml` contient `LOG_DRIVER=journald` (modèle : `cp .env.prod.example .env` ; pour un poste, `.env.local.example`) ; la durée se règle sur le serveur (`MaxRetentionSec=6month` dans la configuration de journald). Le lire : `journalctl CONTAINER_NAME=4l-farfadets-site`. Tout écart (autre hébergeur, autre pays, autre intermédiaire) impose de corriger les mentions légales et la page Confidentialité avant la mise en ligne.
-7. Cloudflare reste dans sa configuration de base : la page Confidentialité ne s'engage que pour le site lui-même et renvoie à la politique de Cloudflare pour ce qu'il ajoute (cookies et scripts de sécurité). Seul point à vérifier après la mise en ligne : sur la page Contact, les adresses s'affichent et le clic ouvre la messagerie. L'arobase des liens `mailto:` est encodée (`src/features/contact/mailto.ts`) pour que l'option *Email Address Obfuscation*, active par défaut, ne les reconnaisse pas : sinon elle les remplacerait par un script de décodage que la CSP bloque. Si les liens sont cassés malgré tout, désactiver cette option (Scrape Shield).
+6. Héberger le site comme les pages légales l'annoncent : sur un VPS OVH situé au Royaume-Uni, derrière un tunnel Cloudflare, avec des journaux d'accès supprimés après **six mois**. C'est le code qui s'en charge, quelle que soit la façon de lancer le site en production (Docker ou `npm start`) : le journal d'accès (`src/server/access-log.ts`) écrit un fichier par jour dans `logs/`, et le serveur supprime lui-même ceux de plus de six mois, à son démarrage puis toutes les 24 heures (`src/instrumentation.ts`). Avec Docker, `logs/` est le volume `access-logs`. Le lire : `docker compose exec site ls logs`, puis `docker compose exec site tail -f logs/access-AAAA-MM-JJ.log`.
+7. Cloudflare reste dans sa configuration de base : la page Confidentialité ne s'engage que pour le site lui-même et renvoie à la politique de Cloudflare pour ce qu'il ajoute (cookies et scripts de sécurité). L'arobase des liens `mailto:` est encodée (`src/features/contact/mailto.ts`) pour que l'option *Email Address Obfuscation*, active par défaut, ne les reconnaisse pas : elle les remplacerait par un script de décodage que la CSP bloque.
 
 `npm audit` remonte des vulnérabilités dans la chaîne ESLint uniquement. `npm audit --omit=dev` ne remonte rien : rien n'atteint le navigateur ni le serveur en production.
 

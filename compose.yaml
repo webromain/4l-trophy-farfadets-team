@@ -5,8 +5,8 @@
 services:
   site:
     build: .
-    image: farfadets-site
-    container_name: 4l-farfadets-site
+    image: 4l-lesfarfadets-site
+    container_name: 4l-lesfarfadets-site
     restart: always
     # 127.0.0.1 : le site n'est joignable que depuis la machine. Un port publié
     # sans adresse serait ouvert sur le réseau, pare-feu ou non.
